@@ -1,3 +1,5 @@
+This branch is an old JSON-based storage version of the modern Tupperbox bot which has fewer features (like no groups) but is significantly easier to set up (no postgres or redis). Users on this branch can freely upgrade to the current master branch, which includes a JSON importer for data files generated with this version.
+
 # Tupperware
 A Discord bot written in <a href="https://github.com/abalabahaha/eris">eris</a> for proxying user messages through webhooks to emulate tulpas/systems users having their own user accounts.
 
