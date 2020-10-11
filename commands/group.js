@@ -47,9 +47,9 @@ module.exports = class GroupCommand extends Command {
 			if(!group) return `You don't have a group named '${args[1]}'.`;
 			args = args.slice(2);
 
-			if (args.length == 1) {
-				if (args[0] == "*") {
-					for (tup of members.filter(t => t.group_id == null)) {
+			if(args.length == 1) {
+				if(args[0] == "*") {
+					for(tup of members.filter(t => t.group_id == null)) {
 						await bot.db.groups.addMember(group.id, tup.id);
 					} 
 					return `All groupless {{tupper}}s assigned to group ${group.name}.`;
@@ -66,17 +66,17 @@ module.exports = class GroupCommand extends Command {
 			let baseLength = 2000 - (addedMessage.length + notAddedMessage.length);
 			let originalLength = { addedMessage: addedMessage.length, notAddedMessage: notAddedMessage.length, };
 
-			for (let arg of args) {
+			for(let arg of args) {
 				let tup = await bot.db.members.get(msg.author.id, arg);
-				if (tup) {
+				if(tup) {
 					await bot.db.groups.addMember(group.id, tup.id);
-					if ((addedMessage.length + notAddedMessage.length + arg.length) < baseLength) addedMessage += ` '${arg}'`; else addedMessage += " (...)";
+					if((addedMessage.length + notAddedMessage.length + arg.length) < baseLength) addedMessage += ` '${arg}'`; else addedMessage += " (...)";
 				} else {
-					if ((addedMessage.length + notAddedMessage.length + arg.length) < baseLength) notAddedMessage += ` '${arg}'`; else notAddedMessage += " (...)";
+					if((addedMessage.length + notAddedMessage.length + arg.length) < baseLength) notAddedMessage += ` '${arg}'`; else notAddedMessage += " (...)";
 				}
 			}
-			if (addedMessage.length == originalLength.addedMessage) return "No {{tupper}}s added to group.";
-			if (notAddedMessage.length == originalLength.notAddedMessage) return addedMessage;
+			if(addedMessage.length == originalLength.addedMessage) return "No {{tupper}}s added to group.";
+			if(notAddedMessage.length == originalLength.notAddedMessage) return addedMessage;
 			return `${addedMessage}\n${notAddedMessage}`;
 
 		case "remove":
@@ -86,8 +86,8 @@ module.exports = class GroupCommand extends Command {
 			if(!group) return `You don't have a group named '${args[1]}'.`;
 			args = args.slice(2);
 
-			if (args.length == 1) {
-				if (args[0] == "*") {
+			if(args.length == 1) {
+				if(args[0] == "*") {
 					await bot.db.groups.removeMembers(group.id);
 					return "All {{tupper}}s set to no group.";
 				}
@@ -102,17 +102,17 @@ module.exports = class GroupCommand extends Command {
 			let rBaseLength = 2000 - (removedMessage.length + notRemovedMessage.length);
 			let rOriginalLength = { removedMessage: removedMessage.length, notRemovedMessage: notRemovedMessage.length, };
 
-			for (let arg of args) {
+			for(let arg of args) {
 				tup = await bot.db.members.get(msg.author.id, arg);
-				if (tup) {
+				if(tup) {
 					await bot.db.members.removeGroup(tup.id);
-					if ((removedMessage.length + notRemovedMessage.length + arg.length) < rBaseLength) removedMessage += ` '${arg}'`; else removedMessage += " (...)";
+					if((removedMessage.length + notRemovedMessage.length + arg.length) < rBaseLength) removedMessage += ` '${arg}'`; else removedMessage += " (...)";
 				} else {
-					if ((removedMessage.length + notRemovedMessage.length + arg.length) < rBaseLength) notRemovedMessage += ` '${arg}'`; else notRemovedMessage += " (...)";
+					if((removedMessage.length + notRemovedMessage.length + arg.length) < rBaseLength) notRemovedMessage += ` '${arg}'`; else notRemovedMessage += " (...)";
 				}
 			}
-			if (removedMessage.length == rOriginalLength.removedMessage) return "No {{tupper}}s found that could be removed from this group.";
-			if (notRemovedMessage.length == rOriginalLength.notRemovedMessage) return removedMessage;
+			if(removedMessage.length == rOriginalLength.removedMessage) return "No {{tupper}}s found that could be removed from this group.";
+			if(notRemovedMessage.length == rOriginalLength.notRemovedMessage) return removedMessage;
 			return `${removedMessage}\n${notRemovedMessage}`;
 
 		case "list":

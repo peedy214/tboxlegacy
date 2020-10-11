@@ -20,7 +20,7 @@ module.exports = class ImportCommand extends Command {
 
 		await client.query("BEGIN");
 
-		for (let g of data.groups) {
+		for(let g of data.groups) {
 			let old = oldData.groups.find(gr => g.name == gr.name) || {};
 			if(!old.name) { //update existing entry
 				added++;
@@ -30,7 +30,7 @@ module.exports = class ImportCommand extends Command {
 				[g.description || null, g.tag || null, msg.author.id, g.name]);
 		}
 
-		for (let t of data.tuppers) {
+		for(let t of data.tuppers) {
 			let old = oldData.tuppers.find(tu => t.name == tu.name) || {};
 
 			if(!old.name) { //update existing entry
@@ -68,7 +68,7 @@ module.exports = class ImportCommand extends Command {
 		let updated = 0;
 		await client.query("BEGIN");
 
-		for (let t of data.members) {
+		for(let t of data.members) {
 			let old = oldData.tuppers.find(tu => t.name == tu.name) || {};
 			let newBrackets = (t.proxy_tags.length == 0) ? [`${t.name}:`, ""] : t.proxy_tags.map(pt => [pt.prefix ||  "", pt.suffix || ""]).reduce((acc, val) => acc.concat(val), []);
 
@@ -82,7 +82,7 @@ module.exports = class ImportCommand extends Command {
 		}
 		await client.query("COMMIT");
 
-		if (await bot.db.groups.memberCount(systemGroup.id) == 0) await bot.db.groups.delete(msg.author.id, systemGroup.id);
+		if(await bot.db.groups.memberCount(systemGroup.id) == 0) await bot.db.groups.delete(msg.author.id, systemGroup.id);
 		return `Import successful. Added ${added} entries and updated ${updated} entries.`;
 	}
 
@@ -98,12 +98,12 @@ module.exports = class ImportCommand extends Command {
 			return "Please attach a valid .json file.";
 		}
 
-		if (!data.tuppers && !data.switches) return "Unknown file format. Please notify the creator by joining the support server. " + (process.env.SUPPORT_INVITE ? `https://discord.gg/${process.env.SUPPORT_INVITE}` : "");
+		if(!data.tuppers && !data.switches) return "Unknown file format. Please notify the creator by joining the support server. " + (process.env.SUPPORT_INVITE ? `https://discord.gg/${process.env.SUPPORT_INVITE}` : "");
 
-		if ((data.tuppers && (data.tuppers.length > 3000 || data.groups.length > 500)) || (data.switches && (data.members.length > 3000))) return "Data too large for import. Please visit the support server for assistance. " + (process.env.SUPPORT_INVITE ? `https://discord.gg/${process.env.SUPPORT_INVITE}` : "");
+		if((data.tuppers && (data.tuppers.length > 3000 || data.groups.length > 500)) || (data.switches && (data.members.length > 3000))) return "Data too large for import. Please visit the support server for assistance. " + (process.env.SUPPORT_INVITE ? `https://discord.gg/${process.env.SUPPORT_INVITE}` : "");
 
 		let confirm = await bot.confirm(msg, "Warning: This will overwrite your data. Only use this command with a recent, untampered .json file generated from the export command from either me or PluralKit. Please reply 'yes' if you wish to continue.");
-		if (confirm !== true) return confirm;
+		if(confirm !== true) return confirm;
 
 		let old = {
 			tuppers: members,

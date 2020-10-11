@@ -31,7 +31,7 @@ module.exports = class AvatarCommand extends Command {
 		if(!args[1] && !msg.attachments[0]) return member.avatar_url;
 
 		// check if we're clearing
-		if (!msg.attachments[0] && args[1] == "clear") {
+		if(!msg.attachments[0] && args[1] == "clear") {
 			clear = true;
 			args[1] = "https://i.imgur.com/ZpijZpg.png";
 		}
@@ -40,7 +40,7 @@ module.exports = class AvatarCommand extends Command {
 
 		//check image is valid
 		let url = msg.attachments[0] ? msg.attachments[0].url : args[1];
-		if (!clear) {
+		if(!clear) {
 			let head;
 			try { head = await request.head(url); }
 			catch(e) { return "I was unable to access that URL. Please try another."; }

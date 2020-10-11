@@ -13,8 +13,8 @@ const question = q => {
 
 const blacklistBitfield = (blockProxies, blockCommands) => {
 	let blacklist = 0;
-	if (blockCommands) blacklist |= 1;
-	if (blockProxies) blacklist |= 2;
+	if(blockCommands) blacklist |= 1;
+	if(blockProxies) blacklist |= 2;
 	return blacklist;
 };
 
@@ -308,14 +308,14 @@ module.exports = {
 
 	blacklist: {
 		get: async (channel) => {
-			if (!channel.guild) return 2; // DM channel: commands OK, proxy NO
+			if(!channel.guild) return 2; // DM channel: commands OK, proxy NO
 			let blacklistCache = await cache.blacklist.get(channel.id);
-			if (blacklistCache) return blacklistCache;
+			if(blacklistCache) return blacklistCache;
 
 			let blacklist;
 
 			let dbBlacklist = (await module.exports.query("select * from blacklist where server_id = $1 and id = $2", [channel.guild.id, channel.id])).rows;
-			if (dbBlacklist.length == 0) blacklist = 0;
+			if(dbBlacklist.length == 0) blacklist = 0;
 			
 			blacklist = blacklistBitfield(dbBlacklist.filter(x => x.block_proxies).length > 0, dbBlacklist.filter(x => x.block_commands).length > 0);
 			cache.blacklist.set(channel.id, blacklist);

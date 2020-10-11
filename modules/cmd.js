@@ -8,7 +8,7 @@ module.exports = async ({msg, bot, members, cfg}) => {
 	let cmdName = args.shift();
 	
 	let cmd = bot.cmds[cmdName];
-	if (!cmd) return;
+	if(!cmd) return;
 
 	if(msg.member) {
 		let missingPerms = cmd.checkPermissions(targetChannel, msg.channel.guild.members.get(bot.user.id));
@@ -17,7 +17,7 @@ module.exports = async ({msg, bot, members, cfg}) => {
 
 	let key = msg.author.id + cmdName;
 	let cd = await cache.cooldowns.get(key);
-	if (cd) return bot.send(targetChannel, `You're using that too quickly! Try again in ${Math.ceil((cd - Date.now())/1000)} seconds`);
+	if(cd) return bot.send(targetChannel, `You're using that too quickly! Try again in ${Math.ceil((cd - Date.now())/1000)} seconds`);
 	if(cmd.cooldown && !process.env.DEV) cache.cooldowns.set(key, cmd.cooldown);
 
 	if(cmd.groupArgs) args = bot.getMatches(content, /“(.+?)”|‘(.+?)’|"(.+?)"|'(.+?)'|(\S+)/gi).slice(1);

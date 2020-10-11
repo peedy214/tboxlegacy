@@ -9,7 +9,7 @@ module.exports = class DevCommand extends Command {
 	}
 
 	async execute(bot, msg, args) {
-		if (msg.author.id != bot.owner) return;
+		if(msg.author.id != bot.owner) return;
 		switch(args.shift()) {
 		case "eval":
 			let out;

@@ -30,7 +30,7 @@ module.exports = class TagCommand extends Command {
 			await bot.db.members.update(msg.author.id, member.name, "tag", null);
 			return "Tag cleared.";
 		}
-		if (args.slice(1).join(" ").length > 25) return "That tag is too long. Please use one with less than 25 characters.";
+		if(args.slice(1).join(" ").length > 25) return "That tag is too long. Please use one with less than 25 characters.";
 		
 		//update member
 		await bot.db.members.update(msg.author.id, args[0], "tag", bot.noVariation(args.slice(1).join(" ")));

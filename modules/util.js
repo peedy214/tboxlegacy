@@ -45,10 +45,10 @@ module.exports = bot => {
 
 	bot.resolveUser = async (msg, text) => {
 		let uid = /<@!?(\d+)>/.test(text) && text.match(/<@!?(\d+)>/)[1] || text;
-		if (/^\d+$/.test(uid)) {
+		if(/^\d+$/.test(uid)) {
 			let target = null;
 			target = await bot.getRESTUser(uid).catch(e => { if(e.code != 10013) throw e; return null; }); //return null if user wasn't found, otherwise throw
-			if (target && target.user) target = target.user;
+			if(target && target.user) target = target.user;
 			return target;
 		} else return null;
 	};
@@ -155,7 +155,7 @@ module.exports = bot => {
 	bot.getMatches = (string, regex) => {
 		let matches = [];
 		let match;
-		while (match = regex.exec(string)) {
+		while(match = regex.exec(string)) {
 			match.splice(1).forEach(m => { if(m) matches.push(m); });
 		}
 		return matches;

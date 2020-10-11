@@ -16,9 +16,9 @@ module.exports = {
 		let q = await bot.db.webhooks.get(channel.id);
 		if(q) {
 			try {
-				if (await bot.getWebhook(q.id, q.token)) return q;
-			} catch (e) {
-				if (e.code != 10015) throw e;
+				if(await bot.getWebhook(q.id, q.token)) return q;
+			} catch(e) {
+				if(e.code != 10015) throw e;
 				await bot.db.webhooks.delete(channel.id);
 				return await module.exports.fetchWebhook(bot, channel);
 			}
@@ -125,7 +125,7 @@ module.exports = {
 
 	replaceMessage: async (bot, msg, cfg, member, content, retry = 2) => {
     
-		if (retry == 0) return;
+		if(retry == 0) return;
     
 		const hook = await module.exports.fetchWebhook(bot, msg.channel);
     
@@ -154,7 +154,7 @@ module.exports = {
 		let webmsg;
 		try {
 			webmsg = await bot.executeWebhook(hook.id, hook.token, data);
-		} catch (e) {
+		} catch(e) {
 			if(e.code == 504 || e.code == "EHOSTUNREACH") {
 				return await module.exports.replaceMessage(bot, msg, cfg, member, content, retry-1);
 			} else if(e.code == 40005) {

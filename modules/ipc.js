@@ -40,8 +40,8 @@ let botExports = (bot) => {
 			try {
 				let path = `../${msg.type}s/${arg}`;
 
-				if (types.includes(msg.type)) delete require.cache[require.resolve(path)];
-				if (msg.type == "command") bot.cmds[arg] = require(path);
+				if(types.includes(msg.type)) delete require.cache[require.resolve(path)];
+				if(msg.type == "command") bot.cmds[arg] = require(path);
 
 				else if(msg.type == "event") {
 					bot.removeAllListeners(arg);
@@ -50,8 +50,8 @@ let botExports = (bot) => {
 				}
 
 				else if(msg.type == "module") {
-					if (arg == "db") await bot.db.end();
-					if (modules.includes(arg)) bot[arg] = require(`../modules/${arg + (arg == "blacklist" ? ".json" : "")}`);
+					if(arg == "db") await bot.db.end();
+					if(modules.includes(arg)) bot[arg] = require(`../modules/${arg + (arg == "blacklist" ? ".json" : "")}`);
 					else switch(arg) {
 
 					case "util":
@@ -82,5 +82,5 @@ let botExports = (bot) => {
 	bot.ipc = this;
 };
 
-if (cluster.isMaster) module.exports = masterExports();
+if(cluster.isMaster) module.exports = masterExports();
 else module.exports = botExports;
