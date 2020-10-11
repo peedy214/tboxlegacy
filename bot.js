@@ -30,7 +30,7 @@ class Tupperbox extends Base {
 
 		let files = fs.readdirSync("./commands");
 		files.forEach(file => {
-			bot.cmds[file.slice(0,-3)] = require("./commands/"+file);
+			bot.cmds[file.slice(0,-3)] = new (require("./commands/"+file))(bot);
 		});
 
 		files = fs.readdirSync("./events");

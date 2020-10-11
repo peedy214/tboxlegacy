@@ -31,10 +31,10 @@ module.exports = async (bot,msg,edit) => {
 
 	if (msg.content == `<@${bot.user.id}>` || msg.content == `<@!${bot.user.id}>`)
 		return bot.send(msg.channel,
-			`Hello! ${msg.channel.guild ? "This server's" : "My"} prefix is \`${cfg.prefix}\`. Try \`${cfg.prefix}help\` for help${(msg.channel.guild && cfg.prefix != process.env.DEFAULT_PREFIX) ? ` or \`${cfg.prefix}cfg prefix ${process.env.DEFAULT_PREFIX}\` to reset the prefix` : ""}.`
+			`Hello! ${msg.channel.guild ? "This server's" : "My"} prefix is \`{{tul!}}\`. Try \`{{tul!}}help\` for help${(msg.channel.guild && cfg.prefix != process.env.DEFAULT_PREFIX) ? ` or \`{{tul!}}cfg prefix ${process.env.DEFAULT_PREFIX}\` to reset the prefix` : ""}.`
 		);
 
-	if (msg.content.startsWith(cfg.prefix)) {
+	if (msg.content.toLowerCase().startsWith(cfg.prefix)) {
 		if (!edit && (!(blacklist & 1) || msg.member.permission.has("manageGuild"))) await bot.cmd({ msg, bot, members, cfg, dmChannel});
 		return;
 	}

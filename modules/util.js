@@ -58,9 +58,6 @@ module.exports = bot => {
 		return g.channels.get(/<#(\d+)>/.test(text) && text.match(/<#(\d+)>/)[1]) || g.channels.get(text); /*|| g.channels.find(m => m.name.toLowerCase() == text.toLowerCase())*/
 	};
 
-	bot.checkPermissions = (bot, cmd, msg, args) =>
-		(msg.author.id === bot.owner) || (cmd.permitted(msg,bot));
-
 	bot.waitMessage = (msg) => {
 		return new Promise((res, rej) => {
 			bot.dialogs[msg.channel.id + msg.author.id] = res;
@@ -88,21 +85,53 @@ module.exports = bot => {
 
 	bot.send = async (channel, message, file, retry = 2) => {
 		if(!channel.id) return;
+		if(typeof message == "string") message = {content: message};
 		let msg;
 		try {
 			if(bot.announcement && message.embed) {
 				if(!message.content) message.content = "";
 				message.content += "\n"+bot.announcement;
 			}
+			message.content = bot.localize(message.content);
 			msg = await channel.createMessage(message, file);
 		} catch(e) {
 			if(e.message.startsWith("Request timed out") || (e.code >= 500 && e.code <= 599) || e.code == "EHOSTUNREACH") {
-				if(retry > 0) return bot.send(channel,message,file,retry-1);
+				if(retry > 0) return bot.send(channel, message, file, retry-1);
 				else return;
 			} else throw e;
 		}
 		return msg;
 	};
+
+	let vowels = ["a", "e", "i", "o", "u"];
+	let proper = text => text.substring(0, 1).toUpperCase() + text.substring(1);
+	bot.localize = (text, cfg) => 
+		text.replace(/\{\{(.+?)\}\}/ig, match => 
+			match.slice(2, -2).split(" ").map(word => {
+				let uppercase = false;
+				let res = "";
+				switch(word) {
+				case "A":
+					uppercase = true;
+				case "a":
+					res = vowels.includes(cfg.lang.slice(0, 1)) ? "an" : "a";
+					break;
+				case "Tupper":
+					uppercase = true;
+				case "tupper":
+					res = cfg.lang;
+					break;
+				case "tul!":
+					res = cfg.prefix;
+					break;
+				default:
+					res = word;
+					break;
+				}
+				if(uppercase) res = proper(res);
+				return res;
+			}).join(" ")
+		);
 
 	bot.sanitizeName = name => {
 		return name.trim();
@@ -124,8 +153,8 @@ module.exports = bot => {
 	};
 
 	bot.getMatches = (string, regex) => {
-		var matches = [];
-		var match;
+		let matches = [];
+		let match;
 		while (match = regex.exec(string)) {
 			match.splice(1).forEach(m => { if(m) matches.push(m); });
 		}

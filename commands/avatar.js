@@ -1,27 +1,33 @@
+const Command = require("../structures/command");
 const validUrl = require("valid-url");
 const request = require("got");
 const probe = require("probe-image-size");
-const {article,proper} = require("../modules/lang");
 
-module.exports = {
-	help: cfg => "View or change " + article(cfg) + " " + cfg.lang + "'s avatar",
-	usage: cfg =>  [
-		`avatar <name> - Show the ${cfg.lang}'s current avatar.`,
-		`avatar <name> [url] - If url is specified or an image is uploaded with the command, change the ${cfg.lang}'s avatar.`,
-		`avatar <name> clear - Set the ${cfg.lang}'s avatar to the default avatar.`,
-	],
-	permitted: () => true,
-	desc: cfg => "It's possible to simply upload the new avatar as an attachment while running the command instead of providing the URL. If a URL is provided, it must be a direct link to an image - that is, the URL should end in .jpg or .png or another common image filetype.\n\nDue to Discord limitations, avatars can't be over 1mb in size and either the width or height of the avatar must be less than 1024.",
-	groupArgs: true,
-	execute: async (bot, msg, args, cfg) => {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["avatar"], cfg);
+module.exports = class AvatarCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.help = "View or change {{a tupper}}'s avatar";
+		this.usage = [
+			["<name>", "Show the {{tupper}}'s current avatar."],
+			["<name> [url]", "If url is specified or an image is uploaded with the command, change the {{tupper}}'s avatar."],
+			["<name> clear", "Set the {{tupper}}'s avatar to the default avatar."]
+		];
+		this.desc = 
+			"It's possible to simply upload the new avatar as an attachment while running the command instead of providing the URL." +
+			"If a URL is provided, it must be a direct link to an image - that is, the URL should end in .jpg or .png or another common image filetype.\n\n" +
+			"Due to Discord limitations, avatars can't be over 1mb in size and either the width or height of the avatar must be less than 1024.";
+	}
+
+	async execute(bot, msg, args) {
+		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["avatar"]);
 
 		let clear = false;
 
 		//check arguments
 		let name = msg.attachments[0] ? args.join(" ") : args[0];
 		let member = await bot.db.members.get(msg.author.id, name);
-		if(!member) return `You don't have ${article(cfg)} ${cfg.lang} named '${name}' registered.`;
+		if(!member) return `You don't have {{a tupper}} named '${name}' registered.`;
 		if(!args[1] && !msg.attachments[0]) return member.avatar_url;
 
 		// check if we're clearing

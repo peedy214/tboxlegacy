@@ -2,11 +2,19 @@ const fs = require("fs").promises;
 let policy = null;
 fs.readFile("./privacy.txt").then(file => policy = file.toString()).catch((err) => { if(err.code != "ENOENT") console.warn(err); });
 
-module.exports = {
-	help: cfg => "View my privacy policy.",
-	usage: cfg => ["privacy - show the privacy policy"],
-	permitted: msg => true,
-	execute: (bot, msg, args, cfg) => {
+const Command = require("../structures/command");
+
+module.exports = class PrivacyCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.help = "View my privacy policy.";
+		this.usage = [
+			["", "show the privacy policy"]
+		];
+	}
+
+	execute(bot, msg, args) {
 		return policy;
 	}
 };

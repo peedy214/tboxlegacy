@@ -1,12 +1,19 @@
+const Command = require("../structures/command");
 const request = require("got");
 
-module.exports = {
-	help: cfg => "Import your data from a file",
-	usage: cfg =>  ["import [link] - Attach a compatible .json file or supply a link to a file when using this command. Data files can be obtained from compatible bots like me and Pluralkit."],
-	permitted: () => true,
-	desc: cfg => "Importing data acts as a merge, meaning if there are any " + cfg.lang + "s already registered with the same name as one being imported, the values will be updated instead of registering a new one.",
-	cooldown: msg => 300000,
-	tupperbox: async (bot, msg, client, data, oldData) => {
+module.exports = class ImportCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.help = "Import your data from a file";
+		this.usage = [
+			["[link]", "Attach a compatible .json file or supply a link to a file when using this command. Data files can be obtained from compatible bots like me and Pluralkit."]
+		];
+		this.desc = "Importing data acts as a merge, meaning if there are any {{tupper}}s already registered with the same name as one being imported, the values will be updated instead of registering a new one.";
+		this.cooldown = 300000;
+	}
+
+	async tupperbox(bot, msg, client, data, oldData) {
 
 		let added = 0;
 		let updated = 0;
@@ -44,8 +51,10 @@ module.exports = {
 		}
 		await client.query("COMMIT");
 		return `Import successful. Added ${added} entries and updated ${updated} entries.`;
-	},
-	pluralkit: async (bot, msg, client, data, oldData) => {
+	}
+
+	async pluralkit(bot, msg, client, data, oldData) {
+
 		let sysName = data.name || msg.author.username;
 
 		let systemGroup = await bot.db.groups.get(msg.author.id,sysName);
@@ -75,8 +84,10 @@ module.exports = {
 
 		if (await bot.db.groups.memberCount(systemGroup.id) == 0) await bot.db.groups.delete(msg.author.id,systemGroup.id);
 		return `Import successful. Added ${added} entries and updated ${updated} entries.`;
-	},
-	execute: async (bot, msg, args, cfg, members) => {
+	}
+
+	async execute(bot, msg, args, members) {
+
 		let file = msg.attachments[0] ?? args[0];
 		if(!file) return "Please attach or link to a .json file to import when running this command.\nYou can get a file by running the export command from me or Pluralkit.";
 

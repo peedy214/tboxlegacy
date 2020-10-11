@@ -1,14 +1,20 @@
+const Command = require("../structures/command");
 const util = require("util");
 
-module.exports = {
-	permitted: (msg, bot) => msg.author.id == bot.owner,
-	execute: async (bot, msg, args, cfg) => {
+module.exports = class DevCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.visible = false;
+	}
+
+	async execute(bot, msg, args) {
 		if (msg.author.id != bot.owner) return;
 		switch(args.shift()) {
 		case "eval":
 			let out;
 			try {
-				out = await eval(msg.content.slice(cfg.prefix.length + 9).trim());
+				out = await eval(args.join(" "));
 			} catch(e) { out = e.toString(); }
 			return util.inspect(out).split(process.env.DISCORD_TOKEN).join("[[ TOKEN ]]").slice(0,2000);
 		case "reload":

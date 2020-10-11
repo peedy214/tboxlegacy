@@ -1,12 +1,18 @@
-const {article,proper} = require("../modules/lang");
+const Command = require("../structures/command");
 
-module.exports = {
-	help: cfg => "Find and display info about " + cfg.lang + "s by name",
-	usage: cfg =>  ["find <name> - Attempts to find " + article(cfg) + " " + cfg.lang + " with exactly the given name, and if none are found, tries to find " + cfg.lang + "s with names containing the given name."],
-	permitted: (msg) => true,
-	groupArgs: true,
-	execute: async (bot, msg, args, cfg) => {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["find"], cfg);
+module.exports = class FindCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.help = "Find and display info about {{tupper}}s by name";
+		this.usage = [
+			["<name>", "Attempts to find {{a tupper}} with exactly the given name, and if none are found, tries to find {{tupper}}s with names containing the given name."]
+		];
+		this.groupArgs = true;
+	}
+
+	async execute(bot, msg, args) {
+		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["find"]);
 
 		//do search
 		let search = args.join(" ").toLowerCase();
@@ -19,7 +25,7 @@ module.exports = {
 			targets = await bot.findAllUsers(msg.channel.guild.id);*/
 		}
 		let results = (await bot.db.query("SELECT * FROM Members WHERE user_id IN (select(unnest($1::text[]))) AND (CASE WHEN tag IS NULL THEN LOWER(name) LIKE '%' || $2 || '%' ELSE (LOWER(name) || LOWER(tag)) LIKE '%' || $2 || '%' END) LIMIT 25",[targets.map(u => u.id),search])).rows;
-		if(!results[0]) return `Couldn't find ${article(cfg)} ${cfg.lang} named '${search}'.`;
+		if(!results[0]) return `Couldn't find {{a tupper}} named '${search}'.`;
 
 		//return single match
 		if(results.length == 1) { 

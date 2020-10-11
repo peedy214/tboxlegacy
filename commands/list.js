@@ -1,9 +1,18 @@
-module.exports = {
-	help: cfg => "Get a detailed list of yours or another user's registered " + cfg.lang + "s",
-	usage: cfg =>  ["list [user] - Sends a list of the user's registered " + cfg.lang + "s, their brackets, post count, and birthday (if set). If user is not specified it defaults to the message author.\nThe bot will provide reaction emoji controls for navigating long lists: Arrows navigate through pages, # jumps to a specific page, ABCD jumps to a specific " + cfg.lang + ", and the stop button deletes the message."],
-	permitted: () => true,
-	cooldown: msg => 60000,
-	execute: async (bot, msg, args, cfg, _members, ng = false) => {
+const Command = require("../structures/command");
+
+module.exports = class ListCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.help = "Get a detailed list of yours or another user's registered {{tupper}}s";
+		this.usage = [
+			["[user]", "Sends a list of the user's registered {{tupper}}s, their brackets, post count, and birthday (if set). If user is not specified it defaults to the message author.\nThe bot will provide reaction emoji controls for navigating long lists: Arrows navigate through pages, # jumps to a specific page, ABCD jumps to a specific {{tupper}}, and the stop button deletes the message."]
+		];
+		this.botPerms = ["embedLinks"];
+		this.cooldown = 60000;
+	}
+
+	async execute(bot, msg, args, _members, ng = false) {
 
 		//get target list
 		let target;
@@ -16,12 +25,12 @@ module.exports = {
 		let groups = await bot.db.groups.getAll(target.id);
 		if(groups[0] && !ng) {
 			let members = await bot.db.members.getAll(target.id);
-			if(!members[0]) return (target.id == msg.author.id) ? "You have not registered any " + cfg.lang + "s." : "That user has not registered any " + cfg.lang + "s.";
+			if(!members[0]) return (target.id == msg.author.id) ? "You have not registered any {{tupper}}s." : "That user has not registered any {{tupper}}s.";
 			if(members.find(t => !t.group_id)) groups.push({name: "Ungrouped", id: null});
 			let embeds = [];
 			for(let i=0; i<groups.length; i++) {
 				let extra = {
-					title: `${target.username}#${target.discriminator}'s registered ${cfg.lang}s`,
+					title: `${target.username}#${target.discriminator}'s registered {{tupper}}s`,
 					author: {
 						name: target.username, 
 						icon_url: target.avatarURL
@@ -37,7 +46,7 @@ module.exports = {
 			}
 			
 			for(let i=0; i<embeds.length; i++) {
-				embeds[i].embed.title = `${target.username}#${target.discriminator}'s registered ${cfg.lang}s`;
+				embeds[i].embed.title = `${target.username}#${target.discriminator}'s registered {{tupper}}s`;
 				if(embeds.length > 1) embeds[i].embed.title += ` (page ${i+1}/${embeds.length}, ${members.length} total)`;
 			}
 
@@ -45,11 +54,11 @@ module.exports = {
 			return embeds[0];
 		}
 		let members = await bot.db.members.getAll(target.id);
-		if(!members[0]) return (target.id == msg.author.id) ? "You have not registered any " + cfg.lang + "s." : "That user has not registered any " + cfg.lang + "s.";
+		if(!members[0]) return (target.id == msg.author.id) ? "You have not registered any {{tupper}}s." : "That user has not registered any {{tupper}}s.";
 
 		//generate paginated list
 		let extra = {
-			title: `${target.username}#${target.discriminator}'s registered ${cfg.lang}s`,
+			title: `${target.username}#${target.discriminator}'s registered {{tupper}}s`,
 			author: {
 				name: target.username,
 				icon_url: target.avatarURL

@@ -1,14 +1,21 @@
+const Command = require("../structures/command");
 
-module.exports = {
-	help: cfg => "Configure server-specific settings",
-	usage: cfg =>  ["cfg prefix <newPrefix> - Change the bot's prefix.",
-		"cfg rename <newname> - Change all instances of the default name 'member' in bot replies in this server to the specified term.",
-		"cfg log [channel] - Enable the bot to send a log of all " + cfg.lang + " messages and some basic info like who registered them. Useful for having a searchable channel and for distinguishing between similar names. To disable logging, run with no channel argument.",
-		"cfg blacklist <add|remove> <channel(s)> - Add or remove channels to the bot's proxy blacklist - users will be unable to proxy in blacklisted channels.",
-		"cfg cmdblacklist <add|remove> <channel(s)> - Add or remove channels to the bot's command blacklist - users will be unable to issue commands in blacklisted channels."],
-		
-	permitted: (msg) => (msg.member && msg.member.permission.has("manageGuild")),
-	execute: async (bot, msg, args, cfg) => {
+module.exports = class CfgCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.help = "Configure server-specific settings";
+		this.usage = [
+			["prefix <newPrefix>", "Change the bot's prefix."],
+			["rename <newname>", "Change all instances of the default name 'member' in bot replies in this server to the specified term."],
+			["log [channel]", "Enable the bot to send a log of all {{tupper}} messages and some basic info like who registered them. Useful for having a searchable channel and for distinguishing between similar names. To disable logging, run with no channel argument."],
+			["blacklist <add|remove> <channel(s)>", "Add or remove channels to the bot's proxy blacklist - users will be unable to proxy in blacklisted channels."],
+			["cmdblacklist <add|remove> <channel(s)>", "Add or remove channels to the bot's command blacklist - users will be unable to issue commands in blacklisted channels."]
+		];
+		this.userPerms = ["manageGuild"];
+	}
+
+	async execute(bot, msg, args) {
 		if(msg.channel.type == 1) return "This command cannot be used in private messages.";
 
 		let gid = msg.channel.guild.id;
@@ -19,7 +26,7 @@ module.exports = {
 			let prefix = args.slice(1).join(" ");
 
 			await bot.db.config.update(gid,"prefix",prefix,bot.defaultCfg);
-			return `Prefix changed to ${prefix}\nThis means that all commands must now be preceded by your chosen prefix rather than \`${cfg.prefix}\`. If this was changed by mistake, run \`${prefix}cfg prefix ${process.env.DEFAULT_PREFIX}\` to return to default behavior.`;
+			return `Prefix changed to ${prefix}\nThis means that all commands must now be preceded by your chosen prefix rather than \`{{tul!}}\`. If this was changed by mistake, run \`${prefix}cfg prefix ${process.env.DEFAULT_PREFIX}\` to return to default behavior.`;
 
 		case "roles":
 			return "This feature has been disabled indefinitely.";
@@ -115,7 +122,7 @@ module.exports = {
 			}
 
 		default:
-			return bot.cmds.help.execute(bot, msg, ["cfg"], cfg);
+			return bot.cmds.help.execute(bot, msg, ["cfg"]);
 		}
 	}
 };

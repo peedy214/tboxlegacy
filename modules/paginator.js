@@ -41,7 +41,7 @@ module.exports = {
 		
 		for(let i=0; i<arr.length; i++) {
 			if(current.embed.fields.length < 5) {
-				current.embed.fields.push(await fieldGen(arr[i],embeds.length+1));
+				current.embed.fields.push(await fieldGen(arr[i], embeds.length+1));
 			} else {
 				embeds.push(current);
 				current = { embed: {
@@ -49,7 +49,7 @@ module.exports = {
 					author: extra.author,
 					description: extra.description,
 					footer: extra.footer,
-					fields: [await fieldGen(arr[i],embeds.length+1)]
+					fields: [await fieldGen(arr[i], embeds.length+1)]
 				}};
 			}
 		}
@@ -61,12 +61,12 @@ module.exports = {
 		return embeds;
 	},
 
-	generateMemberField: (bot, member,group = null,add = 0) => {
+	generateMemberField: (bot, member, group = null, add = 0) => {
 		let out = {
 			name: member.name.trim().length < 1 ? member.name + "\u200b" : member.name,
 			value: `${(group != null) ? "Group: " + group.name + "\n" : ""}${member.tag ? ("Tag: " + member.tag + "\n") : ""}Brackets: ${bot.getBrackets(member)}\nAvatar URL: ${member.avatar_url}${member.birthday ? ("\nBirthday: "+member.birthday.toDateString()) : ""}\nTotal messages sent: ${member.posts}${member.description ? ("\n"+member.description) : ""}`
 		};
-		if(out.value.length + add > 1023) out.value = out.value.slice(0,1020-add) + "...";
+		if(out.value.length + add > 1023) out.value = out.value.slice(0, 1020-add) + "...";
 		return out;
 	},
     
@@ -76,9 +76,9 @@ module.exports = {
 			if(message.channel.type != 1 && message.channel.permissionsOf(bot.user.id).has("manageMessages"))
 				await bot.removeMessageReaction(message.channel.id, message.id, emoji.name, userID);
 		} catch(e) {
-			if(!e.message.startsWith("Request timed out") && e.code != 500 && e.code != 10008) bot.err(message,e,false);
+			if(!e.message.startsWith("Request timed out") && e.code != 500 && e.code != 10008) bot.err(message, e, false);
 		}
-		let msg1,msg2;
+		let msg1, msg2;
 		switch(emoji.name) {
 		case "\u23ea": // first page
 			data.index = 0;

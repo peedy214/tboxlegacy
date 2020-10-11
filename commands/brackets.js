@@ -1,20 +1,26 @@
-const {article,proper} = require("../modules/lang");
+const Command = require("../structures/command");
 
-module.exports = {
-	help: cfg => "View or change " + article(cfg) + " " + cfg.lang + "'s brackets",
-	usage: cfg =>  ["brackets <name> [brackets] - if brackets are given, change the " + cfg.lang + "'s brackets, if not, simply echo the current ones",
-		"brackets add <name> <brackets> - add another set of brackets to proxy with",
-		"brackets remove <name> <brackets> - remove a set of brackets, unless it's the last one"],
-	desc: cfg => "Brackets must be the word 'text' surrounded by any symbols or letters, i.e. `[text]` or `>>text`",
-	permitted: () => true,
-	groupArgs: true,
-	execute: async (bot, msg, args, cfg) => {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["brackets"], cfg);
+module.exports = class BracketsCommand extends Command {
+
+	constructor(bot) {
+		super(bot);
+		this.help = "View or change {{a tupper}}'s brackets";
+		this.usage = [
+			["<name> [brackets]", "if brackets are given, change the {{tupper}}'s brackets, if not, simply echo the current ones"],
+			["add <name> <brackets>", "add another set of brackets to proxy with"],
+			["remove <name> <brackets>", "remove a set of brackets, unless it's the last one"]
+		];
+		this.desc = "Brackets must be the word 'text' surrounded by any symbols or letters, i.e. `[text]` or `>>text`";
+		this.groupArgs = true;
+	}
+	
+	async execute(bot, msg, args) {
+		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["brackets"]);
 
 		//check arguments
 		let name = (args[0] == "add" || args[0] == "remove") ? args[1] : args[0];
 		let member = await bot.db.members.get(msg.author.id,name);
-		if(!member) return `You don't have ${article(cfg)} ${cfg.lang} named '${name}' registered.`;
+		if(!member) return `You don't have {{a tupper}} named '${name}' registered.`;
 		if(!args[1]) return `Brackets for ${args[0]}: ${bot.getBrackets(member)}`;
 		let brackets = msg.content.slice(msg.content.indexOf(name)+name.length+1).trim().split("text");
 		if(brackets.length < 2) return "No 'text' found to detect brackets with. For the last part of your command, enter the word 'text' surrounded by any characters.\nThis determines how the bot detects if it should replace a message.";
