@@ -33,7 +33,7 @@ module.exports = {
 				if(e.code == 30007) {
 					let wbhooks = await channel.getWebhooks();
 					for(let i=0; i<wbhooks.length; i++) {
-						if(wbhooks[i].user.id == bot.user.id) await bot.deleteWebhook(wbhooks[i].id,wbhooks[i].token);
+						if(wbhooks[i].user.id == bot.user.id) await bot.deleteWebhook(wbhooks[i].id, wbhooks[i].token);
 					}
 					if(wbhooks.length == 10) hook = wbhooks[9];
 					else hook = await channel.createWebhook({ name: "Tupperhook" });
@@ -53,7 +53,7 @@ module.exports = {
 				head = await request.head(msg.attachments[i].url);
 			} catch(e) { }
 			if(head && head.headers["content-length"] && Number(head.headers["content-length"]) > 8388608) throw new Error("toolarge");
-			files.push({ file: (await request(msg.attachments[i].url, {encoding: null})).body , name: msg.attachments[i].filename });
+			files.push({ file: (await request(msg.attachments[i].url, {encoding: null})).body, name: msg.attachments[i].filename });
 		}
 		return files;
 	},
@@ -66,12 +66,12 @@ module.exports = {
 
 		//discord collapses same-name messages, so if two would be sent by different users, break them up with a tiny space
 		if(bot.recent[msg.channel.id] && msg.author.id !== bot.recent[msg.channel.id][0].user_id && un === bot.recent[msg.channel.id][0].name) {
-			un = un.substring(0,1) + "\u200a" + un.substring(1);
+			un = un.substring(0, 1) + "\u200a" + un.substring(1);
 		}
 
 		//discord prevents the name 'clyde' being used in a webhook, so break it up with a tiny space
 		un = un.replace(/(c)(lyde)/gi, "$1\u200a$2");
-		if(un.length > 80) un = un.slice(0,78) + "..";
+		if(un.length > 80) un = un.slice(0, 78) + "..";
 
 		return un;
 	},
@@ -80,10 +80,10 @@ module.exports = {
 		`${member.name}${member.tag ? " " + member.tag : ""}${bot.checkMemberBirthday(member) ? "\uD83C\uDF70" : ""}${member.group_id ? " " + ((await bot.db.groups.getById(member.group_id)).tag ?? "") : ""}`.trim(),
 
 	getRecentMentions: (bot, msg, content) =>
-		bot.recent[msg.channel.id] ? content.replace(tagRegex,match => {
+		bot.recent[msg.channel.id] ? content.replace(tagRegex, match => {
 			let includesDiscrim = match.endsWith("#0000");
-			let found = bot.recent[msg.channel.id].find(r => (includesDiscrim ? r.name == match.slice(1,-5) : r.rawname.toLowerCase() == match.slice(1).toLowerCase()));
-			return found ? `${includesDiscrim ? match.slice(0,-5) : match} (<@${found.user_id}>)` : match;
+			let found = bot.recent[msg.channel.id].find(r => (includesDiscrim ? r.name == match.slice(1, -5) : r.rawname.toLowerCase() == match.slice(1).toLowerCase()));
+			return found ? `${includesDiscrim ? match.slice(0, -5) : match} (<@${found.user_id}>)` : match;
 		}) : content,
 
 	logProxy: async (bot, msg, cfg, member, content, webmsg) => {
@@ -92,11 +92,11 @@ module.exports = {
 			if(logchannel.type != 0 || typeof(logchannel.createMessage) != "function") {
 				cfg.log_channel = null;
 				bot.send(msg.channel, "Warning: There is a log channel configured but it is not a text channel. Logging has been disabled.");
-				await bot.db.config.update(msg.channel.guild.id,"log_channel",null,bot.defaultCfg);
+				await bot.db.config.update(msg.channel.guild.id, "log_channel", null, bot.defaultCfg);
 			}
 			else if(!logchannel.permissionsOf(bot.user.id).has("sendMessages") || !logchannel.permissionsOf(bot.user.id).has("readMessages")) {
 				bot.send(msg.channel, "Warning: There is a log channel configured but I do not have permission to send messages to it. Logging has been disabled.");
-				await bot.db.config.update(msg.channel.guild.id,"log_channel",null,bot.defaultCfg);
+				await bot.db.config.update(msg.channel.guild.id, "log_channel", null, bot.defaultCfg);
 			}
 			else bot.send(logchannel, {embed: {
 				title: member.name,
@@ -120,7 +120,7 @@ module.exports = {
 			bot.recent[msg.channel.id] = [];
 		}
 		bot.recent[msg.channel.id].unshift(data);
-		if(bot.recent[msg.channel.id].length > 5) bot.recent[msg.channel.id] = bot.recent[msg.channel.id].slice(0,5);
+		if(bot.recent[msg.channel.id].length > 5) bot.recent[msg.channel.id] = bot.recent[msg.channel.id].slice(0, 5);
 	},
 
 	replaceMessage: async (bot, msg, cfg, member, content, retry = 2) => {
@@ -153,10 +153,10 @@ module.exports = {
     
 		let webmsg;
 		try {
-			webmsg = await bot.executeWebhook(hook.id,hook.token,data);
+			webmsg = await bot.executeWebhook(hook.id, hook.token, data);
 		} catch (e) {
 			if(e.code == 504 || e.code == "EHOSTUNREACH") {
-				return await module.exports.replaceMessage(bot, msg,cfg,member,content,retry-1);
+				return await module.exports.replaceMessage(bot, msg, cfg, member, content, retry-1);
 			} else if(e.code == 40005) {
 				throw new Error("toolarge");
 			} else throw e;
@@ -164,7 +164,7 @@ module.exports = {
     
 		module.exports.logProxy(bot, msg, cfg, member, content, webmsg);
     
-		bot.db.members.update(member.user_id,member.name,"posts",member.posts+1);
+		bot.db.members.update(member.user_id, member.name, "posts", member.posts+1);
     
 		if(!bot.recent[msg.channel.id] && !msg.channel.permissionsOf(bot.user.id).has("manageMessages"))
 			bot.send(msg.channel, "Warning: I do not have permission to delete messages. Both the original message and proxied message will show.");
@@ -183,7 +183,7 @@ module.exports = {
 	findInMessage: (bot, msg, members, cfg) => {
 
 		let clean = msg.cleanContent || msg.content;
-		clean = clean.replace(/(<a?:.+?:\d+?>)|(<@!?\d+?>)/,"cleaned");
+		clean = clean.replace(/(<a?:.+?:\d+?>)|(<@!?\d+?>)/, "cleaned");
 		let cleanarr = clean.split("\n");
 		let lines = msg.content.split("\n");
 		let replace = [];
@@ -197,7 +197,7 @@ module.exports = {
 					if(t.brackets[res*2+1].length == 0) current = t;
 					else current = null;
 					found = true;
-					replace.push([msg,cfg,t,t.show_brackets ? lines[i] : lines[i].substring(t.brackets[res*2].length, lines[i].length-t.brackets[res*2+1].length)]);
+					replace.push([msg, cfg, t, t.show_brackets ? lines[i] : lines[i].substring(t.brackets[res*2].length, lines[i].length-t.brackets[res*2+1].length)]);
 				}
 			});
 			if(!found && current) 
@@ -219,7 +219,7 @@ module.exports = {
 		return replace;
 	},
 
-	executeProxy: async ({msg,bot,members,cfg}) => {
+	executeProxy: async ({msg, bot, members, cfg}) => {
 
 		let replace = module.exports.findInMessage(bot, msg, members, cfg);
     
@@ -258,11 +258,11 @@ module.exports = {
 		let target;
 		try {
 			target = await bot.getDMChannel(userID);
-			await bot.send(target,response);
+			await bot.send(target, response);
 		} catch(e) {
 			target = message.channel;
 			response.content = `<@${userID}>: ${response.content}\n(also I am unable to DM you!)`;
-			await bot.send(target,response);
+			await bot.send(target, response);
 		}
 		await bot.removeMessageReaction(message.channel.id, message.id, emoji.name, userID);
 		return;

@@ -8,17 +8,17 @@ const dhm = t => {
 };
 
 let masterExports = () => {
-	this.postStats = (wrk,msg,shrd) => {
+	this.postStats = (wrk, msg, shrd) => {
 		if(!msg.channelID) return;
-		let guilds = shrd.stats.stats.clusters.reduce((a,b)=>a+b.guilds,0);
+		let guilds = shrd.stats.stats.clusters.reduce((a, b)=>a+b.guilds, 0);
 		shrd.eris.createMessage(msg.channelID,
-			"```"+shrd.stats.stats.clusters.sort((a,b) => a.cluster-b.cluster).map(c => 
+			"```"+shrd.stats.stats.clusters.sort((a, b) => a.cluster-b.cluster).map(c => 
 				`Cluster ${c.cluster}${c.cluster < 10 ? " " : ""} - ${c.ram.toFixed(1)} MB RAM - ${c.guilds} servers (up ${dhm(c.uptime)})`).join("\n")
       +`\n\nTotal memory used: ${(shrd.stats.stats.totalRam/1000000).toFixed(1)} MB/${(os.totalmem()/1000000).toFixed(1)} MB\nTotal servers: ${guilds}\n16 shards per cluster\n\nRequest received on Shard ${msg.shard} (Cluster ${msg.cluster})` + "```"
 		);
 	},
 
-	this.restartCluster = (wrk,msg,shrd) => {
+	this.restartCluster = (wrk, msg, shrd) => {
 		if(msg.id == null) return;
 		cluster.workers[shrd.clusters.get(msg.id).workerID].kill();
 	};
@@ -46,7 +46,7 @@ let botExports = (bot) => {
 				else if(msg.type == "event") {
 					bot.removeAllListeners(arg);
 					let func = require(path);
-					bot.on(arg, (...a) => func(...a,bot));
+					bot.on(arg, (...a) => func(...a, bot));
 				}
 
 				else if(msg.type == "module") {

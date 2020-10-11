@@ -17,10 +17,10 @@ module.exports = async ({msg, bot, members, cfg}) => {
 
 	let key = msg.author.id + cmdName;
 	let cd = await cache.cooldowns.get(key);
-	if (cd) return bot.send(targetChannel,`You're using that too quickly! Try again in ${Math.ceil((cd - Date.now())/1000)} seconds`);
+	if (cd) return bot.send(targetChannel, `You're using that too quickly! Try again in ${Math.ceil((cd - Date.now())/1000)} seconds`);
 	if(cmd.cooldown && !process.env.DEV) cache.cooldowns.set(key, cmd.cooldown);
 
-	if(cmd.groupArgs) args = bot.getMatches(content,/“(.+?)”|‘(.+?)’|"(.+?)"|'(.+?)'|(\S+)/gi).slice(1);
+	if(cmd.groupArgs) args = bot.getMatches(content, /“(.+?)”|‘(.+?)’|"(.+?)"|'(.+?)'|(\S+)/gi).slice(1);
 
 	try {
 		let output = await cmd.execute(bot, msg, args, members);
@@ -30,10 +30,10 @@ module.exports = async ({msg, bot, members, cfg}) => {
 				if(output.embed) output.content = add;
 				else output += "\n" + add;
 			}
-			bot.send(targetChannel,output,null,true,msg.author);
+			bot.send(targetChannel, output, null, true, msg.author);
 		}
 	} catch(e) { 
-		bot.err(msg,e);
+		bot.err(msg, e);
 	}
 
 };

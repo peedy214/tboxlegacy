@@ -23,18 +23,18 @@ module.exports = class BirthdayCommand extends Command {
 		}
 
 		//check arguments
-		let member = await bot.db.members.get(msg.author.id,args[0]);
+		let member = await bot.db.members.get(msg.author.id, args[0]);
 		if(!member) return `You don't have {{a tupper}} named '${args[0]}' registered.`;
 		if(!args[1]) return member.birthday ? "Current birthday: " + member.birthday.toDateString() + "\nTo remove it, try {{tul!}}birthday " + member.name + " clear" : "No birthday currently set for " + args[0];
-		if(["clear","remove","none","delete"].includes(args[1])) {
-			await bot.db.members.update(msg.author.id,member.name,"birthday",null);
+		if(["clear", "remove", "none", "delete"].includes(args[1])) {
+			await bot.db.members.update(msg.author.id, member.name, "birthday", null);
 			return "Birthday cleared.";
 		}
 		if(!(new Date(args[1]).getTime())) return "I can't understand that date. Please enter in the form MM/DD/YYYY with no spaces.";
 
 		//update member
 		let date = new Date(args[1]);
-		await bot.db.members.update(msg.author.id,args[0],"birthday",date);
+		await bot.db.members.update(msg.author.id, args[0], "birthday", date);
 		return `{{Tupper}} '${args[0]}' birthday set to ${date.toDateString()}.`;
 	}
 };

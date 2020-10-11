@@ -24,7 +24,7 @@ module.exports = class FindCommand extends Command {
 			/*await bot.sendChannelTyping(msg.channel.id);
 			targets = await bot.findAllUsers(msg.channel.guild.id);*/
 		}
-		let results = (await bot.db.query("SELECT * FROM Members WHERE user_id IN (select(unnest($1::text[]))) AND (CASE WHEN tag IS NULL THEN LOWER(name) LIKE '%' || $2 || '%' ELSE (LOWER(name) || LOWER(tag)) LIKE '%' || $2 || '%' END) LIMIT 25",[targets.map(u => u.id),search])).rows;
+		let results = (await bot.db.query("SELECT * FROM Members WHERE user_id IN (select(unnest($1::text[]))) AND (CASE WHEN tag IS NULL THEN LOWER(name) LIKE '%' || $2 || '%' ELSE (LOWER(name) || LOWER(tag)) LIKE '%' || $2 || '%' END) LIMIT 25", [targets.map(u => u.id), search])).rows;
 		if(!results[0]) return `Couldn't find {{a tupper}} named '${search}'.`;
 
 		//return single match
@@ -39,7 +39,7 @@ module.exports = class FindCommand extends Command {
 					name: t.name,
 					icon_url: t.url
 				},
-				description: val + bot.paginator.generateMemberField(bot, t,group,val.length).value,
+				description: val + bot.paginator.generateMemberField(bot, t, group, val.length).value,
 			}};
 			return embed;
 		}
@@ -63,7 +63,7 @@ module.exports = class FindCommand extends Command {
 			if(t.group_id) group = await bot.db.groups.getById(t.group_id);
 			let host = targets.find(u => u.id == t.user_id);
 			let val = `User: ${host ? host.username + "#" + host.discriminator : "Unknown user " + t.user_id}\n`;
-			current.embed.fields.push({name: t.name, value: val + bot.paginator.generateMemberField(bot, t,group,val.length).value});
+			current.embed.fields.push({name: t.name, value: val + bot.paginator.generateMemberField(bot, t, group, val.length).value});
 		}
 
 		embeds.push(current);

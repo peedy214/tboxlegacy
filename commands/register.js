@@ -19,7 +19,7 @@ module.exports = class RegisterCommand extends Command {
 		//check arguments
 		let brackets = msg.content.slice(msg.content.indexOf(args[0], msg.content.indexOf("register")+8)+args[0].length+1).trim().split("text");
 		let name = bot.sanitizeName(args[0]);
-		let member = (await bot.db.query("SELECT name,brackets FROM Members WHERE user_id = $1::VARCHAR(32) AND (LOWER(name) = LOWER($2::VARCHAR(76)) OR brackets = $3)",[msg.author.id,name,brackets || []])).rows[0];
+		let member = (await bot.db.query("SELECT name,brackets FROM Members WHERE user_id = $1::VARCHAR(32) AND (LOWER(name) = LOWER($2::VARCHAR(76)) OR brackets = $3)", [msg.author.id, name, brackets || []])).rows[0];
 		if(!args[1]) return "Missing argument 'brackets'. Try `{{tul!}}help register` for usage details.";
 		if(name.length < 1 || name.length > 76)	return "Name must be between 1 and 76 characters.";
 		if(brackets.length < 2)	return "No 'text' found to detect brackets with. For the last part of your command, enter the word 'text' surrounded by any characters.\nThis determines how the bot detects if it should replace a message.";
@@ -32,7 +32,7 @@ module.exports = class RegisterCommand extends Command {
 		let avatar = msg.attachments[0] ? msg.attachments[0].url : "https://i.imgur.com/ZpijZpg.png";
 
 		//add member
-		await bot.db.members.add(msg.author.id,{name,avatarURL:avatar,brackets:brackets.slice(0,2)});
+		await bot.db.members.add(msg.author.id, {name, avatarURL:avatar, brackets:brackets.slice(0, 2)});
 		return {
 			content: "{{Tupper}} registered!",
 			embed: {

@@ -23,17 +23,17 @@ module.exports = class TagCommand extends Command {
 			await bot.db.members.clearTags(msg.author.id);
 			return "Tag cleared for all {{tupper}}s.";
 		}
-		let member = await bot.db.members.get(msg.author.id,args[0]);
+		let member = await bot.db.members.get(msg.author.id, args[0]);
 		if(!member) return `You don't have {{a tupper}} named '${args[0]}' registered.`;
 		if(!args[1]) return member.tag ? "Current tag: " + member.tag + "\nTo remove it, try {{tul!}}tag " + member.name + " clear" : "No tag currently set for " + args[0];
-		if(["clear","remove","none","delete"].includes(args[1])) {
-			await bot.db.members.update(msg.author.id,member.name,"tag",null);
+		if(["clear", "remove", "none", "delete"].includes(args[1])) {
+			await bot.db.members.update(msg.author.id, member.name, "tag", null);
 			return "Tag cleared.";
 		}
 		if (args.slice(1).join(" ").length > 25) return "That tag is too long. Please use one with less than 25 characters.";
 		
 		//update member
-		await bot.db.members.update(msg.author.id,args[0],"tag",bot.noVariation(args.slice(1).join(" ")));
+		await bot.db.members.update(msg.author.id, args[0], "tag", bot.noVariation(args.slice(1).join(" ")));
 		return "Tag updated successfully.";
 	}
 };

@@ -25,7 +25,7 @@ module.exports = class CfgCommand extends Command {
 			if(!args[1]) return "Missing argument 'prefix'.";
 			let prefix = args.slice(1).join(" ");
 
-			await bot.db.config.update(gid,"prefix",prefix,bot.defaultCfg);
+			await bot.db.config.update(gid, "prefix", prefix, bot.defaultCfg);
 			return `Prefix changed to ${prefix}\nThis means that all commands must now be preceded by your chosen prefix rather than \`{{tul!}}\`. If this was changed by mistake, run \`${prefix}cfg prefix ${process.env.DEFAULT_PREFIX}\` to return to default behavior.`;
 
 		case "roles":
@@ -34,17 +34,17 @@ module.exports = class CfgCommand extends Command {
 		case "rename":
 			if(!args[1]) return "Missing argument 'newname'";
 			let lang = args.slice(1).join(" ");
-			await bot.db.config.update(gid,"lang",lang,bot.defaultCfg);
+			await bot.db.config.update(gid, "lang", lang, bot.defaultCfg);
 			return "Entity name changed to " + lang;
 
 		case "log":
 			if(!args[1]) {
-				await bot.db.config.update(gid,"log_channel",null,bot.defaultCfg);
+				await bot.db.config.update(gid, "log_channel", null, bot.defaultCfg);
 				return "Logging channel unset. Logging is now disabled.";
 			}
-			let channel = bot.resolveChannel(msg,args[1]);
+			let channel = bot.resolveChannel(msg, args[1]);
 			if(!channel) return "Channel not found.";
-			await bot.db.config.update(gid,"log_channel",channel.id,bot.defaultCfg);
+			await bot.db.config.update(gid, "log_channel", channel.id, bot.defaultCfg);
 			return `Logging channel set to <#${channel.id}>`;					
 
 		case "blacklist":
@@ -56,7 +56,7 @@ module.exports = class CfgCommand extends Command {
 			switch(args[1]) {
 			case "add":
 				if(!args[2]) return "Must provide name/mention/id of channel to blacklist.";
-				channels = args.slice(2).map(arg => bot.resolveChannel(msg,arg)).map(ch => { if(ch) return ch.id; else return ch; });
+				channels = args.slice(2).map(arg => bot.resolveChannel(msg, arg)).map(ch => { if(ch) return ch.id; else return ch; });
 				if(!channels.find(ch => ch != undefined)) return `Could not find ${channels.length > 1 ? "those channels" : "that channel"}.`;
 				if(channels.some(ch => ch == undefined)) {
 					out = "Could not find these channels: ";
@@ -64,12 +64,12 @@ module.exports = class CfgCommand extends Command {
 						if(!channels[i]) out += args.slice(2)[i];
 					return out;
 				}
-				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid,channels[i],true,true,null);
+				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid, channels[i], true, true, null);
 				return `Channel${channels.length > 1 ? "s" : ""} blacklisted successfully.`;
 						
 			case "remove":
 				if(!args[2]) return "Must provide name/mention/id of channel to allow.";
-				channels = args.slice(2).map(arg => bot.resolveChannel(msg,arg)).map(ch => { if(ch) return ch.id; else return ch; });
+				channels = args.slice(2).map(arg => bot.resolveChannel(msg, arg)).map(ch => { if(ch) return ch.id; else return ch; });
 				if(!channels.find(ch => ch != undefined)) return `Could not find ${channels.length > 1 ? "those channels" : "that channel"}.`;
 				if(channels.some(ch => ch == undefined)) {
 					out = "Could not find these channels: ";
@@ -77,7 +77,7 @@ module.exports = class CfgCommand extends Command {
 						if(!channels[i]) out += args.slice(2)[i] + " ";
 					return out;
 				}
-				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid,channels[i],true,false,null);
+				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid, channels[i], true, false, null);
 				return `Channel${channels.length > 1 ? "s" : ""} removed from blacklist.`;
 
 			default:
@@ -93,7 +93,7 @@ module.exports = class CfgCommand extends Command {
 			switch(args[1]) {
 			case "add":
 				if(!args[2]) return "Must provide name/mention/id of channel to cmdblacklist.";
-				channels = args.slice(2).map(arg => bot.resolveChannel(msg,arg)).map(ch => { if(ch) return ch.id; else return ch; });
+				channels = args.slice(2).map(arg => bot.resolveChannel(msg, arg)).map(ch => { if(ch) return ch.id; else return ch; });
 				if(!channels.find(ch => ch != undefined)) return `Could not find ${channels.length > 1 ? "those channels" : "that channel"}.`;
 				if(channels.some(ch => ch == undefined)) {
 					out = "Could not find these channels: ";
@@ -101,12 +101,12 @@ module.exports = class CfgCommand extends Command {
 						if(!channels[i]) out += args.slice(2)[i];
 					return out;
 				}
-				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid,channels[i],true,null,true);
+				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid, channels[i], true, null, true);
 				return `Channel${channels.length > 1 ? "s" : ""} blacklisted successfully.`;
 						
 			case "remove":
 				if(!args[2]) return "Must provide name/mention/id of channel to allow.";
-				channels = args.slice(2).map(arg => bot.resolveChannel(msg,arg)).map(ch => { if(ch) return ch.id; else return ch; });
+				channels = args.slice(2).map(arg => bot.resolveChannel(msg, arg)).map(ch => { if(ch) return ch.id; else return ch; });
 				if(!channels.find(ch => ch != undefined)) return `Could not find ${channels.length > 1 ? "those channels" : "that channel"}.`;
 				if(channels.some(ch => ch == undefined)) {
 					out = "Could not find these channels: ";
@@ -114,7 +114,7 @@ module.exports = class CfgCommand extends Command {
 						if(!channels[i]) out += args.slice(2)[i] + " ";
 					return out;
 				}
-				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid,channels[i],true,null,false);
+				for(let i=0; i<channels.length; i++) await bot.db.blacklist.update(gid, channels[i], true, null, false);
 				return `Channel${channels.length > 1 ? "s" : ""} removed from cmdblacklist.`;
 
 			default:

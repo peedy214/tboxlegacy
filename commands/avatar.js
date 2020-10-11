@@ -51,11 +51,11 @@ module.exports = class AvatarCommand extends Command {
 			let res;
 			try { res = await probe(url); }
 			catch(e) { return "There was a problem checking that image. Please try another."; }
-			if(Math.min(res.width,res.height) >= 1024) return "That image is too large and Discord will not accept it. Please use an image where width or height is less than 1024 pixels.";
+			if(Math.min(res.width, res.height) >= 1024) return "That image is too large and Discord will not accept it. Please use an image where width or height is less than 1024 pixels.";
 		}
 
 		//update member
-		await bot.db.members.update(msg.author.id,name,"avatar_url",url);
+		await bot.db.members.update(msg.author.id, name, "avatar_url", url);
 		return `Avatar ${clear ? "cleared" : "changed"} successfully.` + (msg.attachments[0] ? "\nNote: if the message you just used to upload the avatar with gets deleted, the avatar will eventually no longer appear." : "");
 	}
 };

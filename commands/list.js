@@ -37,7 +37,7 @@ module.exports = class ListCommand extends Command {
 					},
 					description: `Group: ${groups[i].name}${groups[i].tag ? "\nTag: " + groups[i].tag : ""}${groups[i].description ? "\n" + groups[i].description : ""}`
 				};
-				let add = await bot.paginator.generatePages(bot, members.filter(t => t.group_id == groups[i].id), t => bot.paginator.generateMemberField(bot, t),extra);
+				let add = await bot.paginator.generatePages(bot, members.filter(t => t.group_id == groups[i].id), t => bot.paginator.generateMemberField(bot, t), extra);
 				if(add[add.length-1].embed.fields.length < 5 && groups[i+1]) add[add.length-1].embed.fields.push({
 					name: "\u200b",
 					value: `Next page: group ${groups[i+1].name}`
@@ -50,7 +50,7 @@ module.exports = class ListCommand extends Command {
 				if(embeds.length > 1) embeds[i].embed.title += ` (page ${i+1}/${embeds.length}, ${members.length} total)`;
 			}
 
-			if(embeds[1]) return bot.paginator.paginate(bot, msg,embeds);
+			if(embeds[1]) return bot.paginator.paginate(bot, msg, embeds);
 			return embeds[0];
 		}
 		let members = await bot.db.members.getAll(target.id);
@@ -68,7 +68,7 @@ module.exports = class ListCommand extends Command {
 		let embeds = await bot.paginator.generatePages(bot, members, async t => {
 			let group = null;
 			if(t.group_id) group = await bot.db.groups.getById(t.group_id);
-			return bot.paginator.generateMemberField(bot, t,group);
+			return bot.paginator.generateMemberField(bot, t, group);
 		}, extra);
 		if(embeds[1]) return bot.paginator.paginate(bot, msg, embeds);
 		return embeds[0];

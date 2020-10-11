@@ -5,8 +5,8 @@ const cache = require("./redis");
 let pool = new Pool();
 
 const question = q => {
-	let rl = require("readline").createInterface({input:process.stdin,output:process.stdout});
-	return new Promise((res,rej) => {
+	let rl = require("readline").createInterface({input:process.stdin, output:process.stdout});
+	return new Promise((res, rej) => {
 		rl.question(q, ans => { rl.close(); res(ans); });
 	});
 };
@@ -121,7 +121,7 @@ module.exports = {
 						let member = members[id][i];
 						let conn = await pool.connect();
 						conn.query("INSERT INTO Members(user_id,name,position,avatar_url,brackets,posts,show_brackets,birthday,description,tag) VALUES ($1,$2,$3,$4,$5,$6,$7,to_timestamp($8)::date,$9,$10)",
-							[id,member.name,i,member.url,member.brackets,member.posts,!!member.showbrackets,member.birthday ? member.birthday/1000 : null,member.desc || null,member.tag || null])
+							[id, member.name, i, member.url, member.brackets, member.posts, !!member.showbrackets, member.birthday ? member.birthday/1000 : null, member.desc || null, member.tag || null])
 							.catch(e => { console.error(e); })
 							.then(() => {
 								console.log(`\tuser ${a} - ${member.name} done`);
@@ -147,7 +147,7 @@ module.exports = {
 					count++;
 					console.log(`\tImporting webhook for channel ${id} (${count} of ${keys.length})`);
 					let conn = await pool.connect();
-					conn.query("INSERT INTO Webhooks VALUES ($1,$2,$3)", [webhooks[id].id,id,webhooks[id].token])
+					conn.query("INSERT INTO Webhooks VALUES ($1,$2,$3)", [webhooks[id].id, id, webhooks[id].token])
 						.catch(e => { console.error(e); })
 						.then(() => {
 							console.log(`\twebhook ${id} done`);
@@ -173,11 +173,11 @@ module.exports = {
 					let cfg = config[id];
 					console.log(`\tImporting config for server ${id} (${count} of ${keys.length})`);
 					let conn = await pool.connect();
-					conn.query("INSERT INTO Servers VALUES ($1,$2,$3,$4,$5)", [id,cfg.prefix,cfg.lang,null,cfg.log || null])
+					conn.query("INSERT INTO Servers VALUES ($1,$2,$3,$4,$5)", [id, cfg.prefix, cfg.lang, null, cfg.log || null])
 						.catch(e => { console.error(e); })
 						.then(async () => {
-							if(cfg.blacklist) for(let bl of cfg.blacklist) await module.exports.blacklist.update(id,bl,true,true,null).then(() => console.log(`${id} - blacklist updated`));
-							if(cfg.cmdblacklist) for(let bl of cfg.cmdblacklist) await module.exports.blacklist.update(id,bl,true,null,true).then(() => console.log(`${id} - blacklist updated`));
+							if(cfg.blacklist) for(let bl of cfg.blacklist) await module.exports.blacklist.update(id, bl, true, true, null).then(() => console.log(`${id} - blacklist updated`));
+							if(cfg.cmdblacklist) for(let bl of cfg.cmdblacklist) await module.exports.blacklist.update(id, bl, true, null, true).then(() => console.log(`${id} - blacklist updated`));
 							conn.release();
 						}).catch(e => { throw e; });
 				}
@@ -204,7 +204,7 @@ module.exports = {
 
 	members: {
 		add: async (userID, member, client) => 
-			await (client || module.exports).query("insert into Members (user_id, name, position, avatar_url, brackets, posts, show_brackets) values ($1::VARCHAR(32), $2, (select greatest(count(position), max(position)+1) from Members where user_id = $1::VARCHAR(32)), $3, $4, 0, false)", [userID, member.name, member.avatarURL || "https://i.imgur.com/ZpijZpg.png",member.brackets]),
+			await (client || module.exports).query("insert into Members (user_id, name, position, avatar_url, brackets, posts, show_brackets) values ($1::VARCHAR(32), $2, (select greatest(count(position), max(position)+1) from Members where user_id = $1::VARCHAR(32)), $3, $4, 0, false)", [userID, member.name, member.avatarURL || "https://i.imgur.com/ZpijZpg.png", member.brackets]),
 
 		get: async (userID, name) =>
 			(await module.exports.query("select * from Members where user_id = $1 and lower(name) = lower($2)", [userID, name])).rows[0],
@@ -261,7 +261,7 @@ module.exports = {
 		},
 
 		addMember: async (groupID, memberID) =>
-			await module.exports.query("UPDATE Members SET group_id = $1, group_pos = (SELECT GREATEST(COUNT(group_pos),MAX(group_pos)+1) FROM Members WHERE group_id = $1) WHERE id = $2", [groupID,memberID]),
+			await module.exports.query("UPDATE Members SET group_id = $1, group_pos = (SELECT GREATEST(COUNT(group_pos),MAX(group_pos)+1) FROM Members WHERE group_id = $1) WHERE id = $2", [groupID, memberID]),
 
 		update: async (userID, name, column, newVal) => {
 			return await pool.query(`UPDATE Groups SET ${column} = $1 WHERE user_id = $2 AND LOWER(name) = LOWER($3)`, [newVal, userID, name]);
@@ -283,7 +283,7 @@ module.exports = {
 
 	config: {
 		add: async (serverID, cfg) => {
-			return await pool.query("INSERT INTO Servers(id, prefix, lang) VALUES ($1, $2, $3)", [serverID,cfg.prefix,cfg.lang]);
+			return await pool.query("INSERT INTO Servers(id, prefix, lang) VALUES ($1, $2, $3)", [serverID, cfg.prefix, cfg.lang]);
 		},
 
 		get: async (serverID) => {
@@ -295,8 +295,8 @@ module.exports = {
 		},
 
 		update: async (serverID, column, newVal, cfg) => {
-			await pool.query("INSERT INTO Servers(id, prefix, lang) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING;",[serverID,cfg.prefix,cfg.lang]);
-			let updated = (await pool.query(`UPDATE Servers SET ${column} = $1 WHERE id = $2 RETURNING prefix, lang, lang_plural, log_channel`, [newVal,serverID])).rows[0];
+			await pool.query("INSERT INTO Servers(id, prefix, lang) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING;", [serverID, cfg.prefix, cfg.lang]);
+			let updated = (await pool.query(`UPDATE Servers SET ${column} = $1 WHERE id = $2 RETURNING prefix, lang, lang_plural, log_channel`, [newVal, serverID])).rows[0];
 			if(updated) return await cache.config.set(serverID, updated);
 		},
 
@@ -328,7 +328,7 @@ module.exports = {
 
 		update: async (serverID, id, isChannel, blockProxies, blockCommands) => {
 			cache.blacklist.set(id, blacklistBitfield(blockProxies, blockCommands));
-			return await pool.query("INSERT INTO Blacklist VALUES ($1,$2,$3,CASE WHEN $4::BOOLEAN IS NULL THEN false ELSE $4::BOOLEAN END,CASE WHEN $5::BOOLEAN IS NULL THEN false ELSE $5::BOOLEAN END) ON CONFLICT (id,server_id) DO UPDATE SET block_proxies = (CASE WHEN $4::BOOLEAN IS NULL THEN Blacklist.block_proxies ELSE EXCLUDED.block_proxies END), block_commands = (CASE WHEN $5::BOOLEAN IS NULL THEN Blacklist.block_commands ELSE EXCLUDED.block_commands END)",[id,serverID,isChannel,blockProxies,blockCommands]);
+			return await pool.query("INSERT INTO Blacklist VALUES ($1,$2,$3,CASE WHEN $4::BOOLEAN IS NULL THEN false ELSE $4::BOOLEAN END,CASE WHEN $5::BOOLEAN IS NULL THEN false ELSE $5::BOOLEAN END) ON CONFLICT (id,server_id) DO UPDATE SET block_proxies = (CASE WHEN $4::BOOLEAN IS NULL THEN Blacklist.block_proxies ELSE EXCLUDED.block_proxies END), block_commands = (CASE WHEN $5::BOOLEAN IS NULL THEN Blacklist.block_commands ELSE EXCLUDED.block_commands END)", [id, serverID, isChannel, blockProxies, blockCommands]);
 		},
 
 		delete: async (guildID, channelID) => {

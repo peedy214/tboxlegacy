@@ -4,7 +4,7 @@ module.exports = bot => {
 	bot.err = (msg, error, tell = true) => {
 		if(error.message.startsWith("Request timed out") || error.code == 500 || error.code == "ECONNRESET" || error.code == "EHOSTUNREACH") return; //Internal discord errors don't need reporting
 		console.error(`[ERROR ch:${msg.channel.id} usr:${msg.author ? msg.author.id : "UNKNOWN"}]\n(${error.code}) ${error.stack} `);
-		if(tell && msg.channel) bot.send(msg.channel,`There was an error performing the operation. Please report this to the support server if issues persist. (${error.code || error.message})`).catch(e => {});
+		if(tell && msg.channel) bot.send(msg.channel, `There was an error performing the operation. Please report this to the support server if issues persist. (${error.code || error.message})`).catch(e => {});
 		bot.sentry.captureException(error);
 	};
 
@@ -29,7 +29,7 @@ module.exports = bot => {
 		let amtFound = 1000;
 		let lastId = "0";
 		while(amtFound == 1000) {
-			let found = await bot.requestHandler.request("GET", `/guilds/${guildID}/members`, true, {limit:1000,after:lastId});
+			let found = await bot.requestHandler.request("GET", `/guilds/${guildID}/members`, true, {limit:1000, after:lastId});
 			amtFound = found.length;
 			if(found.length > 0) lastId = found[found.length-1].user.id;
 			targets = targets.concat(found.map(m => m.user));
@@ -138,7 +138,7 @@ module.exports = bot => {
 	};
 
 	bot.noVariation = word => {
-		return word.replace(/[\ufe0f]/g,"");
+		return word.replace(/[\ufe0f]/g, "");
 	};
 
 	bot.banAbusiveUser = async (userID, notifyChannelID) => {
@@ -146,10 +146,10 @@ module.exports = bot => {
 		let membersDeleted = await bot.db.members.clear(userID);
 		let blacklistedNum = 0;
 		try {
-			blacklistedNum = (await bot.db.query("INSERT INTO global_blacklist values($1::VARCHAR(50))",[userID])).rowCount;
+			blacklistedNum = (await bot.db.query("INSERT INTO global_blacklist values($1::VARCHAR(50))", [userID])).rowCount;
 		} catch(e) { console.log(e.message); }
 		console.log(`blacklisted ${blacklistedNum} user ${userID} and deleted ${membersDeleted.rowCount} tuppers`);
-		bot.createMessage(notifyChannelID,`User <@${userID}> (${userID}) is now blacklisted for abuse.`);
+		bot.createMessage(notifyChannelID, `User <@${userID}> (${userID}) is now blacklisted for abuse.`);
 	};
 
 	bot.getMatches = (string, regex) => {

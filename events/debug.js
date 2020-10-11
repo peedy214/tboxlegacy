@@ -1,6 +1,6 @@
 let discordBanned = false;
 
-module.exports = (data,shard,bot)  => {
+module.exports = (data, shard, bot)  => {
 	if(typeof data != "string") return console.log(data);
 	if(data.includes("op\":")) {
 		if(!data.includes("op\":1")) return console.log(`Shard ${shard} sent: ${data.replace(bot.token, "##TOKEN##")}`);

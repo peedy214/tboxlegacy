@@ -1,5 +1,5 @@
 
-module.exports = async (bot,msg,edit) => {
+module.exports = async (bot, msg, edit) => {
 
 	if(msg.author.bot || msg.type != 0) return;
 	if(msg.channel.guild && bot.blacklist.includes(msg.channel.guild.id)) return;
@@ -17,7 +17,7 @@ module.exports = async (bot,msg,edit) => {
 		if(!permissions.has("readMessages")) return;
 		if (!permissions.has("sendMessages")) {
 			try { dmChannel = await bot.getDMChannel(msg.author.id); } 
-			catch(e) { if(e.code != 50007) bot.err(msg,e,false); return; }
+			catch(e) { if(e.code != 50007) bot.err(msg, e, false); return; }
 		}
 	}
 

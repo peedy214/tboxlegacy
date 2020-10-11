@@ -18,7 +18,7 @@ module.exports = class GroupCommand extends Command {
 	}
 
 	async execute(bot, msg, args, members) {
-		let name,existing,group,tup;
+		let name, existing, group, tup;
 		switch(args[0]) {
 		case "create":
 			if(!args[1]) return "No group name given.";
@@ -50,14 +50,14 @@ module.exports = class GroupCommand extends Command {
 			if (args.length == 1) {
 				if (args[0] == "*") {
 					for (tup of members.filter(t => t.group_id == null)) {
-						await bot.db.groups.addMember(group.id,tup.id);
+						await bot.db.groups.addMember(group.id, tup.id);
 					} 
 					return `All groupless {{tupper}}s assigned to group ${group.name}.`;
 				}
 
 				tup = await bot.db.members.get(msg.author.id, args[0]);
 				if(!tup) return `You don't have a registered {{tupper}} named '${args[0]}'.`;
-				await bot.db.groups.addMember(group.id,tup.id);
+				await bot.db.groups.addMember(group.id, tup.id);
 				return `{{Tupper}} '${tup.name}' group set to '${group.name}'.`;
 			}
 
@@ -69,7 +69,7 @@ module.exports = class GroupCommand extends Command {
 			for (let arg of args) {
 				let tup = await bot.db.members.get(msg.author.id, arg);
 				if (tup) {
-					await bot.db.groups.addMember(group.id,tup.id);
+					await bot.db.groups.addMember(group.id, tup.id);
 					if ((addedMessage.length + notAddedMessage.length + arg.length) < baseLength) addedMessage += ` '${arg}'`; else addedMessage += " (...)";
 				} else {
 					if ((addedMessage.length + notAddedMessage.length + arg.length) < baseLength) notAddedMessage += ` '${arg}'`; else notAddedMessage += " (...)";
@@ -127,15 +127,15 @@ module.exports = class GroupCommand extends Command {
 			};
 			if(members.find(t => !t.group_id))
 				groups.push({name: "No Group", id: null});
-			let embeds = await bot.paginator.generatePages(bot, groups,g => {
+			let embeds = await bot.paginator.generatePages(bot, groups, g => {
 				let mms = members.filter(t => t.group_id == g.id).map(t => t.name).join(", ");
 				let field = {
 					name: g.name,
 					value: `${g.tag ? "Tag: " + g.tag + "\n" : ""}${g.description ? "Description: " + g.description + "\n" : ""} ${mms ? `Members: ${mms}` : "No members."}`
 				};
-				if(field.value.length > 1020) field.value = field.value.slice(0,1020) + "...";
+				if(field.value.length > 1020) field.value = field.value.slice(0, 1020) + "...";
 				return field;
-			},extra);
+			}, extra);
                 
 			if(embeds[1]) return bot.paginator.paginate(bot, msg, embeds);                
 			return embeds[0];
@@ -145,8 +145,8 @@ module.exports = class GroupCommand extends Command {
 			group = await bot.db.groups.get(msg.author.id, args[1]);
 			if(!group) return `You don't have a group named '${args[1]}'.`;
 			if(!args[2]) return group.tag ? "Current tag: " + group.tag + "\nTo remove it, try {{tul!}}group tag " + group.name + " clear" : "No tag currently set.";
-			if(["clear","remove","none","delete"].includes(args[2])) {
-				await bot.db.groups.update(msg.author.id,group.name,"tag",null);
+			if(["clear", "remove", "none", "delete"].includes(args[2])) {
+				await bot.db.groups.update(msg.author.id, group.name, "tag", null);
 				return "Tag cleared.";
 			}
 			let tag = args.slice(2).join(" ").trim();
@@ -170,12 +170,12 @@ module.exports = class GroupCommand extends Command {
 			group = await bot.db.groups.get(msg.author.id, args[1]);
 			if(!group) return `You don't have a group named '${args[1]}'.`;
 			if(!args[2]) return group.description ? "Current description: " + group.description + "\nTo remove it, try {{tul!}}group describe " + group.name + " clear" : "No description currently set.";
-			if(["clear","remove","none","delete"].includes(args[2])) {
-				await bot.db.groups.update(msg.author.id,group.name,"description",null);
+			if(["clear", "remove", "none", "delete"].includes(args[2])) {
+				await bot.db.groups.update(msg.author.id, group.name, "description", null);
 				return "Description cleared.";
 			}
 			let description = args.slice(2).join(" ").trim();
-			await bot.db.groups.update(msg.author.id, group.name, "description", description.slice(0,2000));
+			await bot.db.groups.update(msg.author.id, group.name, "description", description.slice(0, 2000));
 			if(description.length > 2000) return "Description updated, but was cut to 2000 characters to fit within Discord embed limits.";
 			return "Description updated.";
 

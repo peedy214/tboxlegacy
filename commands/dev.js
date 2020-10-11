@@ -16,7 +16,7 @@ module.exports = class DevCommand extends Command {
 			try {
 				out = await eval(args.join(" "));
 			} catch(e) { out = e.toString(); }
-			return util.inspect(out).split(process.env.DISCORD_TOKEN).join("[[ TOKEN ]]").slice(0,2000);
+			return util.inspect(out).split(process.env.DISCORD_TOKEN).join("[[ TOKEN ]]").slice(0, 2000);
 		case "reload":
 			process.send({name: "broadcast", msg: {name: "reload", type: args[0], targets: args.slice(1), channel: msg.channel.id}});
 			if(args[0] == "ipc") process.send({name:"reloadIPC"});

@@ -14,7 +14,7 @@ const init = async () => {
 		await require("./modules/db").init();
 	}
 
-	let sharder = new Sharder("Bot " + process.env.DISCORD_TOKEN,"/bot.js",{
+	let sharder = new Sharder("Bot " + process.env.DISCORD_TOKEN, "/bot.js", {
 		clientOptions: {
 			disableEvents: {
 				GUILD_BAN_ADD: true,
@@ -45,19 +45,19 @@ const init = async () => {
 		clusterTimeout: 0.1
 	});
 
-	sharder.eris.on("debug",console.log);
+	sharder.eris.on("debug", console.log);
 	
 
 	if(cluster.isMaster) {
 		let events = require("./modules/ipc.js");
 
-		cluster.on("message",(worker,message) => {
+		cluster.on("message", (worker, message) => {
 			if(message.name == "reloadIPC") {
 				delete require.cache[require.resolve("./modules/ipc.js")];
 				events = require("./modules/ipc.js");
 				console.log("Reloaded IPC plugin!");
 			} else if(events[message.name]) {
-				events[message.name](worker,message,sharder);
+				events[message.name](worker, message, sharder);
 			}
 		});
 	}

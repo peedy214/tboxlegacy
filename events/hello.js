@@ -1,3 +1,3 @@
-module.exports = (trace,id,bot) => {
+module.exports = (trace, id, bot) => {
 	console.log(`Shard ${id} hello!`);
 };

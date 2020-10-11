@@ -30,19 +30,19 @@ class Tupperbox extends Base {
 
 		let files = fs.readdirSync("./commands");
 		files.forEach(file => {
-			bot.cmds[file.slice(0,-3)] = new (require("./commands/"+file))(bot);
+			bot.cmds[file.slice(0, -3)] = new (require("./commands/"+file))(bot);
 		});
 
 		files = fs.readdirSync("./events");
 		files.forEach(file => {
-			bot.on(file.slice(0,-3), (...args) => require("./events/"+file)(...args,bot));
+			bot.on(file.slice(0, -3), (...args) => require("./events/"+file)(...args, bot));
 		});
 
 		process.on("message", message => {
 			if(bot.ipc[message.name]) bot.ipc[message.name](message);
 		});
 
-		setInterval(() => bot.updateStatus(),3600000); //every hour
+		setInterval(() => bot.updateStatus(), 3600000); //every hour
 		bot.updateStatus();
 
 		if (!process.env.BOT_INVITE)
