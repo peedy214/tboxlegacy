@@ -86,13 +86,25 @@ module.exports = bot => {
 	bot.send = async (channel, message, file, retry = 2) => {
 		if(!channel.id) return;
 		if(typeof message == "string") message = {content: message};
+		let cfg = channel.guild ? (await bot.db.config.get(channel.guild.id) || { ...bot.defaultCfg }) : { ...bot.defaultCfg };
 		let msg;
 		try {
 			if(bot.announcement && message.embed) {
 				if(!message.content) message.content = "";
 				message.content += "\n"+bot.announcement;
 			}
-			message.content = bot.localize(message.content);
+			bot.localize(message, "content", cfg);
+			if(message.embed) {
+				let emb = message.embed;
+				bot.localize(emb, "title", cfg);
+				bot.localize(emb, "description", cfg);
+				bot.localize(emb.footer, "text", cfg);
+				if(emb.fields) {
+					for(let field of emb.fields) {
+						bot.localize(field, "name", cfg);
+					}
+				}
+			}
 			msg = await channel.createMessage(message, file);
 		} catch(e) {
 			if(e.message.startsWith("Request timed out") || (e.code >= 500 && e.code <= 599) || e.code == "EHOSTUNREACH") {
@@ -105,8 +117,9 @@ module.exports = bot => {
 
 	let vowels = ["a", "e", "i", "o", "u"];
 	let proper = text => text.substring(0, 1).toUpperCase() + text.substring(1);
-	bot.localize = (text, cfg) => 
-		text.replace(/\{\{(.+?)\}\}/ig, match => 
+	bot.localize = (obj = {}, prop, cfg) => {
+		if(!obj[prop]) return;
+		obj[prop] = obj[prop].replace(/\{\{(.+?)\}\}/ig, match => 
 			match.slice(2, -2).split(" ").map(word => {
 				let uppercase = false;
 				let res = "";
@@ -132,6 +145,7 @@ module.exports = bot => {
 				return res;
 			}).join(" ")
 		);
+	};
 
 	bot.sanitizeName = name => {
 		return name.trim();

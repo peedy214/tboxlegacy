@@ -24,9 +24,9 @@ module.exports = class CfgCommand extends Command {
 		case "prefix":
 			if(!args[1]) return "Missing argument 'prefix'.";
 			let prefix = args.slice(1).join(" ");
-
+			let oldPrefix = msg.content.slice(0, msg.content.indexOf("cfg"));
 			await bot.db.config.update(gid, "prefix", prefix, bot.defaultCfg);
-			return `Prefix changed to ${prefix}\nThis means that all commands must now be preceded by your chosen prefix rather than \`{{tul!}}\`. If this was changed by mistake, run \`${prefix}cfg prefix ${process.env.DEFAULT_PREFIX}\` to return to default behavior.`;
+			return `Prefix changed to ${prefix}\nThis means that all commands must now be preceded by your chosen prefix rather than \`${oldPrefix}\`. If this was changed by mistake, run \`${prefix}cfg prefix ${process.env.DEFAULT_PREFIX}\` to return to default behavior.`;
 
 		case "roles":
 			return "This feature has been disabled indefinitely.";

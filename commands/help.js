@@ -29,7 +29,7 @@ module.exports = class HelpCommand extends Command {
 					}
 				}};
 				for(let u of bot.cmds[args[0]].usage)
-					output.embed.description += `{{tul!}}${u}\n`;
+					output.embed.description += `**{{tul!}}${args[0]}** ${u[0] ? `*${u[0]}* ` : ""}- ${u[1]}\n`;
 				if(bot.cmds[args[0]].desc)
 					output.embed.description += `\n${bot.cmds[args[0]].desc}`;
 				return output;
