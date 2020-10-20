@@ -41,7 +41,7 @@ let botExports = (bot) => {
 				let path = `../${msg.type}s/${arg}`;
 
 				if(types.includes(msg.type)) delete require.cache[require.resolve(path)];
-				if(msg.type == "command") bot.cmds[arg] = require(path);
+				if(msg.type == "command") bot.cmds[arg] = new (require(path))(bot);
 
 				else if(msg.type == "event") {
 					bot.removeAllListeners(arg);
