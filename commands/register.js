@@ -9,7 +9,7 @@ module.exports = class RegisterCommand extends Command {
 			["<name> <brackets>", "Register a new {{tupper}}.\n\t<name> - the {{tupper}}'s name, for multi-word names surround this argument in single or double quotes.\n\t<brackets> - the word 'text' surrounded by any characters on one or both sides"]
 		];
 		this.desc = "Upload an image when using this command to quickly set that image as the avatar!\n\nExample use: `register Test >text<` - registers {{a tupper}} named 'Test' that is triggered by messages surrounded by ><\nBrackets can be anything, one sided or both. For example `text<<` and `T:text` are both valid\nNote that you can enter multi-word names by surrounding the full name in single or double quotes `'like this'` or `\"like this\"`.";
-		this.cooldown = 5000;
+		this.cooldown = 5*1000;
 		this.groupArgs = true;
 	}
 
@@ -18,6 +18,7 @@ module.exports = class RegisterCommand extends Command {
 		if(!args[0]) return bot.cmds.help.execute(ctx, "register");
 
 		//check arguments
+		ctx.cooldown = 1000;
 		let brackets = msg.content.slice(msg.content.indexOf(args[0], msg.content.indexOf("register")+8)+args[0].length+1).trim().split("text");
 		let name = bot.sanitizeName(args[0]);
 		let member = (await bot.db.query("SELECT name,brackets FROM Members WHERE user_id = $1::VARCHAR(32) AND (LOWER(name) = LOWER($2::VARCHAR(76)) OR brackets = $3)", [msg.author.id, name, brackets || []])).rows[0];
@@ -31,6 +32,7 @@ module.exports = class RegisterCommand extends Command {
 		let daysOld = bot.ageOf(msg.author);
 		if((daysOld < 30 && members.Length >= 500) || (daysOld < 14 && members.Length >= 100)) return "Maximum {{tupper}}s reached for your account age.";
 		let avatar = msg.attachments[0] ? msg.attachments[0].url : "https://i.imgur.com/ZpijZpg.png";
+		ctx.cooldown = null; //no override
 
 		//add member
 		await bot.db.members.add(msg.author.id, {name, avatarURL:avatar, brackets:brackets.slice(0, 2)});

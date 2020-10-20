@@ -10,7 +10,7 @@ module.exports = class ImportCommand extends Command {
 			["[link]", "Attach a compatible .json file or supply a link to a file when using this command. Data files can be obtained from compatible bots like me and Pluralkit."]
 		];
 		this.desc = "Importing data acts as a merge, meaning if there are any {{tupper}}s already registered with the same name as one being imported, the values will be updated instead of registering a new one.";
-		this.cooldown = 300000;
+		this.cooldown = 60*1000;
 	}
 
 	async tupperbox(bot, msg, client, data, oldData) {
@@ -88,7 +88,7 @@ module.exports = class ImportCommand extends Command {
 
 	async execute(ctx) {
 		let {bot, msg, args, members} = ctx;
-
+		ctx.cooldown = 1000;
 		let file = msg.attachments[0] ?? args[0];
 		if(!file) return "Please attach or link to a .json file to import when running this command.\nYou can get a file by running the export command from me or Pluralkit.";
 
@@ -98,6 +98,7 @@ module.exports = class ImportCommand extends Command {
 		} catch(e) {
 			return "Please attach a valid .json file.";
 		}
+		ctx.cooldown = 5000;
 
 		if(!data.tuppers && !data.switches) return "Unknown file format. Please notify the creator by joining the support server. " + (process.env.SUPPORT_INVITE ? `https://discord.gg/${process.env.SUPPORT_INVITE}` : "");
 
@@ -106,6 +107,7 @@ module.exports = class ImportCommand extends Command {
 		let confirm = await bot.confirm(msg, "Warning: This will overwrite your data. Only use this command with a recent, untampered .json file generated from the export command from either me or PluralKit. Please reply 'yes' if you wish to continue.");
 		if(confirm !== true) return confirm;
 
+		ctx.cooldown = null; //no override
 		let old = {
 			tuppers: members,
 			groups: await bot.db.groups.getAll(msg.author.id),
@@ -113,11 +115,12 @@ module.exports = class ImportCommand extends Command {
 
 		let client = await bot.db.connect();
 		try {
-			if(data.tuppers) return await module.exports.tupperbox(bot, msg, client, data, old);
-			else if(data.switches) return await module.exports.pluralkit(bot, msg, client, data, old);
+			if(data.tuppers) return await this.tupperbox(bot, msg, client, data, old);
+			else if(data.switches) return await this.pluralkit(bot, msg, client, data, old);
 		} catch(e) {
 			bot.err(msg, e, false);
 			if(client) await client.query("ROLLBACK");
+			ctx.cooldown = 10000;
 			return `Something went wrong importing your data. This may have resulted in a partial import. Please check the data and try again. (${e.code || e.message})`;
 		} finally {
 			if(client) client.release();

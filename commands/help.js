@@ -16,6 +16,7 @@ module.exports = class HelpCommand extends Command {
 		//help for a specific command
 		let cmd = command || args[0];
 		if(cmd) {
+			ctx.cooldown = 1000;
 			if(bot.cmds[cmd] && bot.cmds[cmd].usage) {
 				let output = { embed: {
 					title: "Bot Command | " + cmd,
@@ -29,7 +30,7 @@ module.exports = class HelpCommand extends Command {
 					footer: {
 						text: "If something is wrapped in <> or [], do not include the brackets when using the command. They indicate whether that part of the command is required <> or optional []."
 					}
-				}, cooldown: 1000};
+				}};
 				for(let u of bot.cmds[cmd].usage)
 					output.embed.description += `**{{tul!}}${cmd}** ${u[0] ? `*${u[0]}* ` : ""}- ${u[1]}\n`;
 				if(bot.cmds[cmd].desc)

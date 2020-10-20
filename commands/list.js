@@ -9,7 +9,7 @@ module.exports = class ListCommand extends Command {
 			["[user]", "Sends a list of the user's registered {{tupper}}s, their brackets, post count, and birthday (if set). If user is not specified it defaults to the message author.\nThe bot will provide reaction emoji controls for navigating long lists: Arrows navigate through pages, # jumps to a specific page, ABCD jumps to a specific {{tupper}}, and the stop button deletes the message."]
 		];
 		this.botPerms = ["embedLinks"];
-		this.cooldown = 30000;
+		this.cooldown = 30*1000;
 	}
 
 	async execute(ctx, ng = false) {
@@ -19,7 +19,10 @@ module.exports = class ListCommand extends Command {
 		if(args[0]) {
 			target = await bot.resolveUser(msg, args.join(" "));
 		} else target = msg.author;
-		if(!target) return "User not found.";
+		if(!target) {
+			ctx.cooldown = 1000;
+			return "User not found.";
+		}
 
 		//generate paginated list with groups
 		let groups = await bot.db.groups.getAll(target.id);

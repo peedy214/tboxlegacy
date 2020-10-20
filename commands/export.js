@@ -9,12 +9,15 @@ module.exports = class ExportCommand extends Command {
 			["[name]", "Get a .json file of your data that you can import to compatible bots. If a name is specified, will export only that {{tupper}}."]
 		];
 		this.groupArgs = true;
-		this.cooldown = 60000;
+		this.cooldown = 60*1000;
 	}
 
 	async execute(ctx) {
 		let {bot, msg, args, members} = ctx;
+
 		let data = { tuppers: [], groups: []};
+		ctx.cooldown = 1000;
+		
 		if(!args[0]) data = { tuppers: members, groups: (await bot.db.groups.getAll(msg.author.id)) };			
 		else {
 			for(let arg of args) {
@@ -23,7 +26,10 @@ module.exports = class ExportCommand extends Command {
 				data.tuppers.push(tup);
 			}
 		}
+
 		if(data.tuppers.length == 0 && data.groups.length == 0) return "You don't have anything to export.";
+		ctx.cooldown = null;
+
 		try {
 			let channel = await msg.author.getDMChannel(); //get the user's DM channel
 			let exportMsg = await bot.send(channel, "", {name:"tuppers.json", file:Buffer.from(JSON.stringify(data))}); //send it to them in DMs
