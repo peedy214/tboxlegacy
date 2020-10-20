@@ -11,13 +11,15 @@ module.exports = class HelpCommand extends Command {
 		];
 	}
 
-	async execute(bot, msg, args) {
+	async execute(ctx, command) {
+		let {bot, args} = ctx;
 		//help for a specific command
-		if(args[0]) {
-			if(bot.cmds[args[0]] && bot.cmds[args[0]].usage) {
+		let cmd = command || args[0];
+		if(cmd) {
+			if(bot.cmds[cmd] && bot.cmds[cmd].usage) {
 				let output = { embed: {
-					title: "Bot Command | " + args[0],
-					description: bot.cmds[args[0]].help + "\n\n**Usage:**\n",
+					title: "Bot Command | " + cmd,
+					description: bot.cmds[cmd].help + "\n\n**Usage:**\n",
 					timestamp: new Date().toJSON(),
 					color: 0x999999,
 					author: {
@@ -27,11 +29,11 @@ module.exports = class HelpCommand extends Command {
 					footer: {
 						text: "If something is wrapped in <> or [], do not include the brackets when using the command. They indicate whether that part of the command is required <> or optional []."
 					}
-				}};
-				for(let u of bot.cmds[args[0]].usage)
-					output.embed.description += `**{{tul!}}${args[0]}** ${u[0] ? `*${u[0]}* ` : ""}- ${u[1]}\n`;
-				if(bot.cmds[args[0]].desc)
-					output.embed.description += `\n${bot.cmds[args[0]].desc}`;
+				}, cooldown: 1000};
+				for(let u of bot.cmds[cmd].usage)
+					output.embed.description += `**{{tul!}}${cmd}** ${u[0] ? `*${u[0]}* ` : ""}- ${u[1]}\n`;
+				if(bot.cmds[cmd].desc)
+					output.embed.description += `\n${bot.cmds[cmd].desc}`;
 				return output;
 			}
 			return "Command not found.";

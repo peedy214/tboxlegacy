@@ -17,8 +17,10 @@ module.exports = class GroupCommand extends Command {
 		this.groupArgs = true;
 	}
 
-	async execute(bot, msg, args, members) {
+	async execute(ctx) {
+		let {bot, msg, args, members} = ctx;
 		let name, existing, group, tup;
+		console.log(args);
 		switch(args[0]) {
 		case "create":
 			if(!args[1]) return "No group name given.";
@@ -180,7 +182,7 @@ module.exports = class GroupCommand extends Command {
 			return "Description updated.";
 
 		default:
-			return bot.cmds.help.execute(bot, msg, ["group"]);
+			return bot.cmds.help.execute(ctx, "group");
 		}
 	}
 };

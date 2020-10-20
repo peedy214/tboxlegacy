@@ -9,12 +9,13 @@ module.exports = class RegisterCommand extends Command {
 			["<name> <brackets>", "Register a new {{tupper}}.\n\t<name> - the {{tupper}}'s name, for multi-word names surround this argument in single or double quotes.\n\t<brackets> - the word 'text' surrounded by any characters on one or both sides"]
 		];
 		this.desc = "Upload an image when using this command to quickly set that image as the avatar!\n\nExample use: `register Test >text<` - registers {{a tupper}} named 'Test' that is triggered by messages surrounded by ><\nBrackets can be anything, one sided or both. For example `text<<` and `T:text` are both valid\nNote that you can enter multi-word names by surrounding the full name in single or double quotes `'like this'` or `\"like this\"`.";
-		this.cooldown = 15000;
+		this.cooldown = 5000;
 		this.groupArgs = true;
 	}
 
-	async execute(bot, msg, args, members) {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["register"]);
+	async execute(ctx) {
+		let {bot, msg, args, members} = ctx;
+		if(!args[0]) return bot.cmds.help.execute(ctx, "register");
 
 		//check arguments
 		let brackets = msg.content.slice(msg.content.indexOf(args[0], msg.content.indexOf("register")+8)+args[0].length+1).trim().split("text");

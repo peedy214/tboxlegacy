@@ -14,7 +14,7 @@ module.exports = class PrivacyCommand extends Command {
 		];
 	}
 
-	execute(bot, msg, args) {
+	execute(ctx) {
 		return policy;
 	}
 };

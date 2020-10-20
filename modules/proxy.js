@@ -219,17 +219,18 @@ module.exports = {
 		return replace;
 	},
 
-	executeProxy: async ({msg, bot, members, cfg}) => {
-
+	executeProxy: async (ctx) => {
+		let {msg, bot, members, cfg} = ctx;
 		let replace = module.exports.findInMessage(bot, msg, members, cfg);
     
-		if(!replace[0]) return false;
+		if(!replace[0]) return;
     
 		try {
 			if(replace.length > 7) {
 				//console.log(`Potential abuse by ${msg.author.id} - ${replace.length} proxies at once in ${msg.channel.id}!`);
-				return bot.send(msg.channel, "Proxy refused: too many proxies in one message!");
+				return "Proxy refused: too many proxies in one message!";
 			}
+			ctx.reportErrors = true;
 			for(let r of replace) {
 				await module.exports.replaceMessage(bot, ...r);
 			}
@@ -237,14 +238,14 @@ module.exports = {
 			if(perms.has("manageMessages") && perms.has("readMessages"))
 				// todo: do we want to try deleting multiple times, as previously done in the deletion queue?
 				msg.delete().catch(bot.ignoreDeletion);
-			return true;
+			return;
 		} catch(e) { 
-			if(e.message == "empty") bot.send(msg.channel, "Cannot proxy empty message.");
-			else if(e.permission == "Manage Webhooks") bot.send(msg.channel, "Proxy failed because I don't have 'Manage Webhooks' permission in this channel.");
-			else if(e.message == "toolarge") bot.send(msg.channel, "Message not proxied because bots can't send attachments larger than 8mb. Sorry!");
+			if(e.message == "empty") return "Cannot proxy empty message.";
+			else if(e.permission == "Manage Webhooks") return "Proxy failed because I don't have 'Manage Webhooks' permission in this channel.";
+			else if(e.message == "toolarge") return "Message not proxied because bots can't send attachments larger than 8mb. Sorry!";
 			else if(e.message == "autoban") {
-				if(e.notify) bot.send(msg.channel, "Proxies refused due to spam!");
 				console.log(`Potential spam by ${msg.author.id}!`);
+				if(e.notify) return "Proxies refused due to spam!";
 			} 
 			else if(e.code != 10008) bot.err(msg, e); //discard "Unknown Message" errors
 		}

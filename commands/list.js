@@ -9,11 +9,11 @@ module.exports = class ListCommand extends Command {
 			["[user]", "Sends a list of the user's registered {{tupper}}s, their brackets, post count, and birthday (if set). If user is not specified it defaults to the message author.\nThe bot will provide reaction emoji controls for navigating long lists: Arrows navigate through pages, # jumps to a specific page, ABCD jumps to a specific {{tupper}}, and the stop button deletes the message."]
 		];
 		this.botPerms = ["embedLinks"];
-		this.cooldown = 60000;
+		this.cooldown = 30000;
 	}
 
-	async execute(bot, msg, args, _members, ng = false) {
-
+	async execute(ctx, ng = false) {
+		let {bot, msg, args} = ctx;
 		//get target list
 		let target;
 		if(args[0]) {

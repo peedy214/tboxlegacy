@@ -11,7 +11,8 @@ module.exports = class StatsCommand extends Command {
 		this.desc =  "Displays a list of useful technical information about the bot's running processes. Lists technical details of all clusters, useful for monitoring recent outages and the progress of ongoing restarts. Displays the total memory usage and allocation of the bot, along with how many servers the bot is serving. Displays which shard is currently supporting this server and which cluster that shard is a part of.";
 	}
 
-	execute(bot, msg, args) {
+	execute(ctx) {
+		let {bot, msg} = ctx;
 		process.send({name: "postStats", channelID: msg.channel.id, shard: msg.channel.guild ? msg.channel.guild.shard.id : 0, cluster: bot.base.clusterID});
 	}
 };

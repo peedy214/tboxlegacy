@@ -86,7 +86,8 @@ module.exports = class ImportCommand extends Command {
 		return `Import successful. Added ${added} entries and updated ${updated} entries.`;
 	}
 
-	async execute(bot, msg, args, members) {
+	async execute(ctx) {
+		let {bot, msg, args, members} = ctx;
 
 		let file = msg.attachments[0] ?? args[0];
 		if(!file) return "Please attach or link to a .json file to import when running this command.\nYou can get a file by running the export command from me or Pluralkit.";

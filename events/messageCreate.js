@@ -1,3 +1,5 @@
+const {handle, messageCreateHandlers} = require("../modules/messageHandlers");
+
 module.exports = async (msg, bot) => {
-	bot.msg(bot, msg);
+	return handle(bot, msg, messageCreateHandlers);
 };

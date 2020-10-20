@@ -9,10 +9,12 @@ module.exports = class FindCommand extends Command {
 			["<name>", "Attempts to find {{a tupper}} with exactly the given name, and if none are found, tries to find {{tupper}}s with names containing the given name."]
 		];
 		this.groupArgs = true;
+		this.cooldown = 10000;
 	}
 
-	async execute(bot, msg, args) {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["find"]);
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
+		if(!args[0]) return bot.cmds.help.execute(ctx, "find");
 
 		//do search
 		let search = args.join(" ").toLowerCase();

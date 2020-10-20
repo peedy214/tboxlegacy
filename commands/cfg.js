@@ -15,7 +15,8 @@ module.exports = class CfgCommand extends Command {
 		this.userPerms = ["manageGuild"];
 	}
 
-	async execute(bot, msg, args) {
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
 		if(msg.channel.type == 1) return "This command cannot be used in private messages.";
 
 		let gid = msg.channel.guild.id;
@@ -122,7 +123,7 @@ module.exports = class CfgCommand extends Command {
 			}
 
 		default:
-			return bot.cmds.help.execute(bot, msg, ["cfg"]);
+			return bot.cmds.help.execute(ctx, "cfg");
 		}
 	}
 };

@@ -11,8 +11,9 @@ module.exports = class ToggleBracketsCommand extends Command {
 		this.groupArgs = true;
 	}
 
-	async execute(bot, msg, args) {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["togglebrackets"]);
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
+		if(!args[0]) return bot.cmds.help.execute(ctx, "togglebrackets");
 		
 		//check arguments
 		let member = await bot.db.members.get(msg.author.id, args[0]);

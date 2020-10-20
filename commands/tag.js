@@ -14,8 +14,9 @@ module.exports = class TagCommand extends Command {
 		this.groupArgs = true;
 	}
 
-	async execute(bot, msg, args) {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["tag"]);
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
+		if(!args[0]) return bot.cmds.help.execute(ctx, "tag");
 		
 		//check arguments & clear tag if empty
 		if(args[0] == "*") {

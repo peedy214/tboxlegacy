@@ -13,7 +13,8 @@ module.exports = class BirthdayCommand extends Command {
 		this.groupArgs = true;
 	}
 
-	async execute(bot, msg, args) {
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
 		if(!args[0]) {
 			return "The 'list upcoming birthdays' function is temporarily disabled due to recent Discord changes. We have a request in processing to obtain rights needed to re-enable it. Please check the support server for updates or try again in a day or two.";
 			/*let targets = msg.channel.guild ? await bot.findAllUsers(msg.channel.guild.id) : [msg.author];

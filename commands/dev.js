@@ -8,7 +8,8 @@ module.exports = class DevCommand extends Command {
 		this.visible = false;
 	}
 
-	async execute(bot, msg, args) {
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
 		if(msg.author.id != bot.owner) return;
 		switch(args.shift()) {
 		case "eval":

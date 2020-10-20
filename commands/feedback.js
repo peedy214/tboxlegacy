@@ -10,7 +10,8 @@ module.exports = class FeedbackCommand extends Command {
 		];
 	}
 
-	execute(bot, msg, args) {
+	execute(ctx) {
+		let {bot, msg, args} = ctx;
 		return process.env.SUPPORT_INVITE;
 	}
 };

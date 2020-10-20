@@ -19,19 +19,20 @@ module.exports = class AvatarCommand extends Command {
 			"Due to Discord limitations, avatars can't be over 1mb in size and either the width or height of the avatar must be less than 1024.";
 	}
 
-	async execute(bot, msg, args) {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["avatar"]);
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
+		if(!args[0]) return bot.cmds.help.execute(ctx, "avatar");
 
 		let clear = false;
 
 		//check arguments
-		let name = msg.attachments[0] ? args.join(" ") : args[0];
-		let member = await bot.db.members.get(msg.author.id, name);
+		let name = ctx.msg.attachments[0] ? args.join(" ") : args[0];
+		let member = await ctx.bot.db.members.get(msg.author.id, name);
 		if(!member) return `You don't have {{a tupper}} named '${name}' registered.`;
-		if(!args[1] && !msg.attachments[0]) return member.avatar_url;
+		if(!args[1] && !ctx.msg.attachments[0]) return { content: member.avatar_url, cooldown: 1000 };
 
 		// check if we're clearing
-		if(!msg.attachments[0] && args[1] == "clear") {
+		if(!msg.attachments[0] && ctx.args[1] == "clear") {
 			clear = true;
 			args[1] = "https://i.imgur.com/ZpijZpg.png";
 		}

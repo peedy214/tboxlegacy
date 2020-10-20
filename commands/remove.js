@@ -12,8 +12,9 @@ module.exports = class RemoveCommand extends Command {
 		this.groupArgs = true;
 	}
 
-	async execute(bot, msg, args, members) {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["remove"]);
+	async execute(ctx) {
+		let {bot, msg, args, members} = ctx;
+		if(!args[0]) return bot.cmds.help.execute(ctx, "remove");
 
 		//check arguments
 		if(args[0] == "*") {

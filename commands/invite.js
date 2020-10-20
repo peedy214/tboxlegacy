@@ -10,7 +10,7 @@ module.exports = class InviteCommand extends Command {
 		];
 	}
 
-	execute(bot, msg, args) {
+	execute(ctx) {
 		return `Click/tap this link to invite the bot to your server: <https://discord.com/oauth2/authorize?client_id=${process.env.BOT_INVITE}&scope=bot&permissions=536996928>\nIf you are on mobile and are having issues, copy the link and paste it into a browser.`;
 	}
 };

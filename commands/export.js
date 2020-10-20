@@ -9,10 +9,11 @@ module.exports = class ExportCommand extends Command {
 			["[name]", "Get a .json file of your data that you can import to compatible bots. If a name is specified, will export only that {{tupper}}."]
 		];
 		this.groupArgs = true;
-		this.cooldown = 600000;
+		this.cooldown = 60000;
 	}
 
-	async execute(bot, msg, args, members) {
+	async execute(ctx) {
+		let {bot, msg, args, members} = ctx;
 		let data = { tuppers: [], groups: []};
 		if(!args[0]) data = { tuppers: members, groups: (await bot.db.groups.getAll(msg.author.id)) };			
 		else {

@@ -14,8 +14,9 @@ module.exports = class BracketsCommand extends Command {
 		this.groupArgs = true;
 	}
 	
-	async execute(bot, msg, args) {
-		if(!args[0]) return bot.cmds.help.execute(bot, msg, ["brackets"]);
+	async execute(ctx) {
+		let {bot, msg, args} = ctx;
+		if(!args[0]) return bot.cmds.help.execute(ctx, "brackets");
 
 		//check arguments
 		let name = (args[0] == "add" || args[0] == "remove") ? args[1] : args[0];
