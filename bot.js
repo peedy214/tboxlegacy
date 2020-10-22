@@ -21,8 +21,6 @@ class Tupperbox extends Base {
 		bot.dialogs = {};
 		bot.owner = process.env.DISCORD_OWNERID;
 		bot.defaultCfg = { prefix: process.env.DEFAULT_PREFIX, lang: process.env.DEFAULT_LANG };
-		try { bot.blacklist = require("./modules/blacklist.json"); }
-		catch(e) { bot.blacklist = []; }
 		require("./modules/ipc")(bot);
 		require("./modules/util")(bot);
 

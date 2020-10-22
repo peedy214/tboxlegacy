@@ -17,6 +17,7 @@ async function handle(bot, msg, handlers) {
 
 	if(ctx.response) {
 		if(typeof ctx.response == "string") ctx.response = {content: ctx.response};
+		else ctx.response.content = "";
 		if(ctx.target != msg.channel) ctx.response.content += "\n\nThis message sent to you in DMs because I do not have permission to send messages in the original channel!";
 		return bot.send(ctx.target, ctx.response);
 	}
@@ -25,7 +26,6 @@ async function handle(bot, msg, handlers) {
 async function standardChecks(ctx) {
 	let {msg, bot} = ctx;
 	if(msg.author.bot || msg.type != 0) return false;
-	if(msg.channel.guild && bot.blacklist.includes(msg.channel.guild.id)) return false;
 	if(await bot.db.getGlobalBlacklisted(msg.author.id)) return false;
     
 	ctx.blacklist = +(await bot.db.blacklist.get(msg.channel));
