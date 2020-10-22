@@ -6,7 +6,7 @@ module.exports = class RenameCommand extends Command {
 		super(bot);
 		this.help = "Change {{a tupper}}'s name";
 		this.usage = [
-			["<name> <newname>", "Set a new name for the {{tupper}}"]
+			{ args: "<name> <newname>", desc: "Set a new name for the {{tupper}}" }
 		];
 		this.desc = "Use single or double quotes around multi-word names `\"like this\"` or `'like this'`.";
 		this.groupArgs = true;

@@ -6,10 +6,10 @@ module.exports = class RegisterCommand extends Command {
 		super(bot);
 		this.help = "Register a new {{tupper}}";
 		this.usage = [
-			["<name> <brackets>", "Register a new {{tupper}}.\n\t<name> - the {{tupper}}'s name, for multi-word names surround this argument in single or double quotes.\n\t<brackets> - the word 'text' surrounded by any characters on one or both sides"]
+			{ args: "<name> <brackets>", desc: "Register a new {{tupper}}.\n\t<name> - the {{tupper}}'s name, for multi-word names surround this argument in single or double quotes.\n\t<brackets> - the word 'text' surrounded by any characters on one or both sides" }
 		];
 		this.desc = "Upload an image when using this command to quickly set that image as the avatar!\n\nExample use: `register Test >text<` - registers {{a tupper}} named 'Test' that is triggered by messages surrounded by ><\nBrackets can be anything, one sided or both. For example `text<<` and `T:text` are both valid\nNote that you can enter multi-word names by surrounding the full name in single or double quotes `'like this'` or `\"like this\"`.";
-		this.cooldown = 5*1000;
+		this.cooldown = 5;
 		this.groupArgs = true;
 	}
 
@@ -18,7 +18,7 @@ module.exports = class RegisterCommand extends Command {
 		if(!args[0]) return bot.cmds.help.execute(ctx, "register");
 
 		//check arguments
-		ctx.cooldown = 1000;
+		ctx.cooldown = 1;
 		let brackets = msg.content.slice(msg.content.indexOf(args[0], msg.content.indexOf("register")+8)+args[0].length+1).trim().split("text");
 		let name = bot.sanitizeName(args[0]);
 		let member = (await bot.db.query("SELECT name,brackets FROM Members WHERE user_id = $1::VARCHAR(32) AND (LOWER(name) = LOWER($2::VARCHAR(76)) OR brackets = $3)", [msg.author.id, name, brackets || []])).rows[0];

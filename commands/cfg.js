@@ -6,11 +6,11 @@ module.exports = class CfgCommand extends Command {
 		super(bot);
 		this.help = "Configure server-specific settings";
 		this.usage = [
-			["prefix <newPrefix>", "Change the bot's prefix."],
-			["rename <newname>", "Change all instances of the default name 'member' in bot replies in this server to the specified term."],
-			["log [channel]", "Enable the bot to send a log of all {{tupper}} messages and some basic info like who registered them. Useful for having a searchable channel and for distinguishing between similar names. To disable logging, run with no channel argument."],
-			["blacklist <add|remove> <channel(s)>", "Add or remove channels to the bot's proxy blacklist - users will be unable to proxy in blacklisted channels."],
-			["cmdblacklist <add|remove> <channel(s)>", "Add or remove channels to the bot's command blacklist - users will be unable to issue commands in blacklisted channels."]
+			{ subcmd: "prefix", args: "<newPrefix>", desc: "Change the bot's prefix." },
+			{ subcmd: "rename", args: "<newname>", desc: "Change all instances of the default name 'member' in bot replies in this server to the specified term." },
+			{ subcmd: "log", args: "[channel]", desc: "Enable the bot to send a log of all {{tupper}} messages and some basic info like who registered them. Useful for having a searchable channel and for distinguishing between similar names. To disable logging, run with no channel argument." },
+			{ subcmd: "blacklist", args: "<add|remove> <channel(s)>", desc: "Add or remove channels to the bot's proxy blacklist - users will be unable to proxy in blacklisted channels." },
+			{ subcmd: "cmdblacklist", args: "<add|remove> <channel(s)>", desc: "Add or remove channels to the bot's command blacklist - users will be unable to issue commands in blacklisted channels." }
 		];
 		this.userPerms = ["manageGuild"];
 	}

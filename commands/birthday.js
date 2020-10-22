@@ -6,8 +6,8 @@ module.exports = class BirthdayCommand extends Command {
 		super(bot);
 		this.help = "View or change {{a tupper}}'s birthday, or see upcoming birthdays";
 		this.usage = [
-			["[name] [date]",  "\n\tIf name and date are specified, set the named {{tupper}}'s birthday to the date.\n\tIf name only is specified, show the {{tupper}}'s birthday.\n\tIf neither are given, show the next 5 birthdays on the server."],
-			["[name] clear/remove/none/delete", "Unset a birthday for the given {{tupper}}."]
+			{ args: "[name] [date]", desc: "\n\tIf name and date are specified, set the named {{tupper}}'s birthday to the date.\n\tIf name only is specified, show the {{tupper}}'s birthday.\n\tIf neither are given, show the next 5 birthdays on the server." },
+			{ args: "[name] clear/remove/none/delete", desc: "Unset a birthday for the given {{tupper}}." }
 		];
 		this.desc = "Date must be given in format MM/DD/YY and are stored in UTC.";
 		this.groupArgs = true;

@@ -6,8 +6,8 @@ module.exports = class DescribeCommand extends Command {
 		super(bot);
 		this.help = "View or change {{a tupper}}'s description";
 		this.usage = [
-			["<name> [desc]", "if desc is specified, change the {{tupper}}'s describe, if not, simply echo the current one"],
-			["[name] clear/remove/none/delete", "Unset a description for the given {{tupper}}."]
+			{ args: "<name> [desc]", desc: "if desc is specified, change the {{tupper}}'s describe, if not, simply echo the current one" },
+			{ args: "[name] clear/remove/none/delete", desc: "Unset a description for the given {{tupper}}." }
 		];
 		this.groupArgs = true;
 	}

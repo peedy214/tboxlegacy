@@ -6,10 +6,10 @@ module.exports = class ListCommand extends Command {
 		super(bot);
 		this.help = "Get a detailed list of yours or another user's registered {{tupper}}s";
 		this.usage = [
-			["[user]", "Sends a list of the user's registered {{tupper}}s, their brackets, post count, and birthday (if set). If user is not specified it defaults to the message author.\nThe bot will provide reaction emoji controls for navigating long lists: Arrows navigate through pages, # jumps to a specific page, ABCD jumps to a specific {{tupper}}, and the stop button deletes the message."]
+			{ args: "[user]", desc: "Sends a list of the user's registered {{tupper}}s, their brackets, post count, and birthday (if set). If user is not specified it defaults to the message author.\nThe bot will provide reaction emoji controls for navigating long lists: Arrows navigate through pages, # jumps to a specific page, ABCD jumps to a specific {{tupper}}, and the stop button deletes the message." }
 		];
 		this.botPerms = ["embedLinks"];
-		this.cooldown = 30*1000;
+		this.cooldown = 30;
 	}
 
 	async execute(ctx, ng = false) {
@@ -20,7 +20,7 @@ module.exports = class ListCommand extends Command {
 			target = await bot.resolveUser(msg, args.join(" "));
 		} else target = msg.author;
 		if(!target) {
-			ctx.cooldown = 1000;
+			ctx.cooldown = 1;
 			return "User not found.";
 		}
 

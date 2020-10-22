@@ -9,9 +9,9 @@ module.exports = class AvatarCommand extends Command {
 		super(bot);
 		this.help = "View or change {{a tupper}}'s avatar";
 		this.usage = [
-			["<name>", "Show the {{tupper}}'s current avatar."],
-			["<name> [url]", "If url is specified or an image is uploaded with the command, change the {{tupper}}'s avatar."],
-			["<name> clear", "Set the {{tupper}}'s avatar to the default avatar."]
+			{ args: "<name>", desc: "Show the {{tupper}}'s current avatar." },
+			{ args: "<name> [url]", desc: "If url is specified or an image is uploaded with the command, change the {{tupper}}'s avatar." },
+			{ args: "<name> clear", desc: "Set the {{tupper}}'s avatar to the default avatar." }
 		];
 		this.desc = 
 			"It's possible to simply upload the new avatar as an attachment while running the command instead of providing the URL." +
@@ -29,7 +29,7 @@ module.exports = class AvatarCommand extends Command {
 		let name = ctx.msg.attachments[0] ? args.join(" ") : args[0];
 		let member = await ctx.bot.db.members.get(msg.author.id, name);
 		if(!member) return `You don't have {{a tupper}} named '${name}' registered.`;
-		if(!args[1] && !ctx.msg.attachments[0]) return { content: member.avatar_url, cooldown: 1000 };
+		if(!args[1] && !ctx.msg.attachments[0]) return member.avatar_url;
 
 		// check if we're clearing
 		if(!msg.attachments[0] && ctx.args[1] == "clear") {

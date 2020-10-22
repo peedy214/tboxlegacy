@@ -6,7 +6,7 @@ module.exports = class ToggleBracketsCommand extends Command {
 		super(bot);
 		this.help = "Toggles whether the brackets are included or stripped in proxied messages for the given {{tupper}}";
 		this.usage = [
-			["<name>", "toggles showing brackets on or off for the given {{tupper}}"]
+			{ args: "<name>", desc: "toggles showing brackets on or off for the given {{tupper}}" }
 		];
 		this.groupArgs = true;
 	}

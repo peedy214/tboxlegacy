@@ -6,9 +6,9 @@ module.exports = class BracketsCommand extends Command {
 		super(bot);
 		this.help = "View or change {{a tupper}}'s brackets";
 		this.usage = [
-			["<name> [brackets]", "if brackets are given, change the {{tupper}}'s brackets, if not, simply echo the current ones"],
-			["add <name> <brackets>", "add another set of brackets to proxy with"],
-			["remove <name> <brackets>", "remove a set of brackets, unless it's the last one"]
+			{ args: "<name> [brackets]", desc: "if brackets are given, change the {{tupper}}'s brackets, if not, simply echo the current ones" },
+			{ args: "add <name> <brackets>", desc: "add another set of brackets to proxy with" },
+			{ args: "remove <name> <brackets>", desc: "remove a set of brackets, unless it's the last one" }
 		];
 		this.desc = "Brackets must be the word 'text' surrounded by any symbols or letters, i.e. `[text]` or `>>text`";
 		this.groupArgs = true;

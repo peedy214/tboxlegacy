@@ -6,15 +6,15 @@ module.exports = class FindCommand extends Command {
 		super(bot);
 		this.help = "Find and display info about {{tupper}}s by name";
 		this.usage = [
-			["<name>", "Attempts to find {{a tupper}} with exactly the given name, and if none are found, tries to find {{tupper}}s with names containing the given name."]
+			{ args: "<name>", desc: "Attempts to find {{a tupper}} with exactly the given name, and if none are found, tries to find {{tupper}}s with names containing the given name." }
 		];
 		this.groupArgs = true;
-		this.cooldown = 10*1000;
+		this.cooldown = 10;
 	}
 
 	async execute(ctx) {
 		let {bot, msg, args} = ctx;
-		ctx.cooldown = 1000;
+		ctx.cooldown = 1;
 		if(!args[0]) return bot.cmds.help.execute(ctx, "find");
 
 		//do search
@@ -28,7 +28,7 @@ module.exports = class FindCommand extends Command {
 			targets = await bot.findAllUsers(msg.channel.guild.id);*/
 		}
 		let results = (await bot.db.query("SELECT * FROM Members WHERE user_id IN (select(unnest($1::text[]))) AND (CASE WHEN tag IS NULL THEN LOWER(name) LIKE '%' || $2 || '%' ELSE (LOWER(name) || LOWER(tag)) LIKE '%' || $2 || '%' END) LIMIT 25", [targets.map(u => u.id), search])).rows;
-		ctx.cooldown = this.cooldown;
+		ctx.cooldown = null;
 		if(!results[0]) return `Couldn't find {{a tupper}} named '${search}'.`;
 
 		//return single match

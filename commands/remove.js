@@ -6,8 +6,8 @@ module.exports = class RemoveCommand extends Command {
 		super(bot);
 		this.help = "Unregister {{a tupper}}";
 		this.usage = [
-			["<name>", "Unregister the named {{tupper}} from your list"],
-			["*", "Unregister ALL of your {{tupper}}s (requires confirmation)"]
+			{ args: "<name>", desc: "Unregister the named {{tupper}} from your list" },
+			{ args: "*", desc: "Unregister ALL of your {{tupper}}s (requires confirmation)" }
 		];
 		this.groupArgs = true;
 	}

@@ -7,10 +7,10 @@ module.exports = class ImportCommand extends Command {
 		super(bot);
 		this.help = "Import your data from a file";
 		this.usage = [
-			["[link]", "Attach a compatible .json file or supply a link to a file when using this command. Data files can be obtained from compatible bots like me and Pluralkit."]
+			{ args: "[link]", desc: "Attach a compatible .json file or supply a link to a file when using this command. Data files can be obtained from compatible bots like me and Pluralkit." }
 		];
 		this.desc = "Importing data acts as a merge, meaning if there are any {{tupper}}s already registered with the same name as one being imported, the values will be updated instead of registering a new one.";
-		this.cooldown = 60*1000;
+		this.cooldown = 60;
 	}
 
 	async tupperbox(bot, msg, client, data, oldData) {
@@ -88,7 +88,7 @@ module.exports = class ImportCommand extends Command {
 
 	async execute(ctx) {
 		let {bot, msg, args, members} = ctx;
-		ctx.cooldown = 1000;
+		ctx.cooldown = 1;
 		let file = msg.attachments[0] ?? args[0];
 		if(!file) return "Please attach or link to a .json file to import when running this command.\nYou can get a file by running the export command from me or Pluralkit.";
 
@@ -98,7 +98,7 @@ module.exports = class ImportCommand extends Command {
 		} catch(e) {
 			return "Please attach a valid .json file.";
 		}
-		ctx.cooldown = 5000;
+		ctx.cooldown = 5;
 
 		if(!data.tuppers && !data.switches) return "Unknown file format. Please notify the creator by joining the support server. " + (process.env.SUPPORT_INVITE ? `https://discord.gg/${process.env.SUPPORT_INVITE}` : "");
 
@@ -120,7 +120,7 @@ module.exports = class ImportCommand extends Command {
 		} catch(e) {
 			bot.err(msg, e, false);
 			if(client) await client.query("ROLLBACK");
-			ctx.cooldown = 10000;
+			ctx.cooldown = 10;
 			return `Something went wrong importing your data. This may have resulted in a partial import. Please check the data and try again. (${e.code || e.message})`;
 		} finally {
 			if(client) client.release();

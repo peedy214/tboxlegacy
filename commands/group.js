@@ -5,14 +5,14 @@ module.exports = class GroupCommand extends Command {
 		super(bot);
 		this.help = "View or change your groups";
 		this.usage = [
-			["create <name>", "Add a new group with the given name"],
-			["delete <name>", "Remove a group, all {{tupper}}s in the group will be reassigned to empty group"],
-			["add <name> <member>", "Add an existing {{tupper}} to the named group (use * to select all groupless {{tupper}}s)"],
-			["remove <name> <member>", "Remove a member from the named group (use * to empty the group)"],
-			["list", "Short list of your groups and their {{tupper}}s"],
-			["rename <name> <newname>", "Rename a group"],
-			["tag <name> <tag>", "Give the group a tag, to be displayed after group member names and personal tags"],
-			["describe <name> <description>", "Give the group a description"]
+			{ subcmd: "create", args: "<name>", desc: "Add a new group with the given name" },
+			{ subcmd: "delete", args: "<name>", desc: "Remove a group, all {{tupper}}s in the group will be reassigned to empty group" },
+			{ subcmd: "add", args: "<name> <member>", desc: "Add an existing {{tupper}} to the named group (use * to select all groupless {{tupper}}s)" },
+			{ subcmd: "remove", args: "<name> <member>", desc: "Remove a member from the named group (use * to empty the group)" },
+			{ subcmd: "list", args: "", desc: "Short list of your groups and their {{tupper}}s" },
+			{ subcmd: "rename", args: "<name> <newname>", desc: "Rename a group" },
+			{ subcmd: "tag", args: "<name> <tag>", desc: "Give the group a tag, to be displayed after group member names and personal tags" },
+			{ subcmd: "describe", args: "<name> <description>", desc: "Give the group a description" }
 		];
 		this.groupArgs = true;
 	}

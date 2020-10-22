@@ -7,8 +7,9 @@ module.exports = class HelpCommand extends Command {
 		this.help = "Print this message, or get help for a specific command";
 		this.usage = [
 			["", "print list of commands"],
-			["[command]", "get help on a specific command"]
+			{ args: "[command]", desc: "get help on a specific command" }
 		];
+		this.botPerms = ["embedLinks"];
 	}
 
 	async execute(ctx, command) {
@@ -16,7 +17,7 @@ module.exports = class HelpCommand extends Command {
 		//help for a specific command
 		let cmd = command || args[0];
 		if(cmd) {
-			ctx.cooldown = 1000;
+			ctx.cooldown = 1;
 			if(bot.cmds[cmd] && bot.cmds[cmd].usage) {
 				let output = { embed: {
 					title: "Bot Command | " + cmd,
@@ -31,8 +32,9 @@ module.exports = class HelpCommand extends Command {
 						text: "If something is wrapped in <> or [], do not include the brackets when using the command. They indicate whether that part of the command is required <> or optional []."
 					}
 				}};
-				for(let u of bot.cmds[cmd].usage)
-					output.embed.description += `**{{tul!}}${cmd}** ${u[0] ? `*${u[0]}* ` : ""}- ${u[1]}\n`;
+				for(let u of bot.cmds[cmd].usage) {
+					output.embed.description += `**{{tul!}}${cmd}${u.subcmd ? ` ${u.subcmd}` : ""}** ${u.args ? `*${u.args}* ` : ""}- ${u.desc}\n`;
+				}
 				if(bot.cmds[cmd].desc)
 					output.embed.description += `\n${bot.cmds[cmd].desc}`;
 				return output;

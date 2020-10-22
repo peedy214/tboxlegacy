@@ -6,9 +6,9 @@ module.exports = class TagCommand extends Command {
 		super(bot);
 		this.help = "Remove or change {{a tupper}}'s tag (displayed next to name when proxying)";
 		this.usage = [
-			["<name> [tag]", "if tag is given, change the {{tupper}}'s tag, if not, show the current one."],
-			["[name] clear/remove/none/delete", "Unset a tag for the given {{tupper}}."],
-			["*", "clear tag for all {{tupper}}s"]
+			{ args: "<name> [tag]", desc: "if tag is given, change the {{tupper}}'s tag, if not, show the current one." },
+			{ args: "[name] clear/remove/none/delete", desc: "Unset a tag for the given {{tupper}}." },
+			{ args: "*", desc: "clear tag for all {{tupper}}s" }
 		];
 		this.desc = "{{A tupper}}'s tag is shown next to their name when speaking.";
 		this.groupArgs = true;
