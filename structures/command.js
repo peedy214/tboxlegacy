@@ -43,6 +43,6 @@ module.exports = class Command {
 
 	//should go in another file?
 	makePermsReadable(perms) {
-		return perms.map(p => p.split(/(?=[A-Z])/).map(s => s.slice(0,1).toUpperCase() + s.slice(1).toLowerCase()).join(" "));
+		return perms.map(p => p.split(/(?=[A-Z])/).map(s => s.slice(0, 1).toUpperCase() + s.slice(1).toLowerCase()).join(" "));
 	}
 };
